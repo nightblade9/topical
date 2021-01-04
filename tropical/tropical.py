@@ -16,7 +16,7 @@ class Tropical:
 
         project_directory = args[1]
 
-        project_config = ProjectValidator(project_directory).get_config()
-        print("Gotcha, config is {}".format(project_config))
+        content_data = ProjectValidator(project_directory).get_data()
+        print("Gotcha, data is: {}".format(content_data))
 
         

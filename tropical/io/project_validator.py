@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import os, sys
+import json, os, sys
+from tropical.constants import DATA_FILE_NAME
 
 class ProjectValidator:
     
@@ -12,7 +13,17 @@ class ProjectValidator:
             print("Project directory {} doesn't exist or isn't a directory".format(project_directory))
             sys.exit(3)
 
+        if not os.path.isfile("{}/{}".format(project_directory, DATA_FILE_NAME)):
+            print("Can't find config file {}\{}".format(project_directory, DATA_FILE_NAME))
+            sys.exit(4)
+
         self._project_directory = project_directory
 
-    def get_config(self):
-        return {}
+    def get_data(self):
+        text_data = ""
+
+        with open("{}/{}".format(self._project_directory, DATA_FILE_NAME), 'r') as file_pointer:
+            text_data = file_pointer.read()
+
+        content_data = json.loads(text_data)
+        return content_data
