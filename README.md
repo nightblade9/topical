@@ -26,7 +26,7 @@ Create a new directory for your topical project. (Bonus points if you version-co
 ]
 ```
 
-Next, copy the `default-theme` directory from `topical` to your project root.
+Next, copy the `default-theme` directory from `topical` to your project root and rename it to `theme`.
 
 Finally, run `topical` to generte the output.  I haven't bundled this as a `pip` module yet, so for now, you need to run it by hand.
 
