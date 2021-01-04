@@ -1,2 +1,37 @@
-# topical
-Static website generator for link collections with metadata. Made in Python.
+# Topical
+
+Static website generator for link collections with metadata. Features:
+
+- Quickly generates a static site with metadata (tags, blurb, etc.) for creating topical sites on a topic
+- Can be hosted for free on GitHub via GitHub Pages
+- Includes client-side search
+
+# Usage
+
+Create a new directory for your topical project. (Bonus points if you version-control it.) Within that directory, create a file called `data.json`. Each entry needs a `title`, `url`, and `tags`; `blurb` is optional. Example:
+
+```json
+[
+    {
+        "title": "Pelican",
+        "url": "https://docs.getpelican.com/en/latest/",
+        "tags": [ "static-site-generator", "python" ],
+        "blurb": "Static site generator that supports Markdown."
+    },
+    {
+        "title": "Wordpress",
+        "url": "https://wordpress.org",
+        "tags": [ "cms", "php", "mysql" ]
+    }
+]
+```
+
+Next, copy the `default-theme` directory from `topical` to your project root.
+
+Finally, run `topical` to generte the output.  I haven't bundled this as a `pip` module yet, so for now, you need to run it by hand.
+
+- `git clone https://github.com/nightblade/topical`
+- `cd topical`
+- `python main.py /path/to/project/folder`
+
+You can customize the theme by hand as you wish, or replace it outright.
