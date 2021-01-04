@@ -50,5 +50,6 @@ TBD. For now, inspect the existing ones and code and reverse-engineer how they w
 # snippet.html
 
 - `title`: page title
+- `url`: page URL
 - `tags`: each is individually wrapped in `span class="tag"`
 - `blurb`: blurb (if specified)

@@ -79,19 +79,21 @@ class Themer:
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
             snippets_template = file_pointer.read()
 
+        snippet_attributes = "title", "url", "blurb"
         html_snippets = []
 
         for item in content_json:
-            item_html = snippets_template.replace("{title}", item["title"])
+            item_html = snippets_template
+            for attribute in snippet_attributes:
+                if attribute in item:
+                    # e.g. replace {url} with item["url"]
+                    item_html = item_html.replace("{" + attribute + "}", item[attribute])
             
             tags_html = ""
             for tag in item["tags"]:
                 tags_html += "<span class='tag'>{}</span>".format(tag)
 
             item_html = item_html.replace("{tags}", tags_html)
-
-            if "blurb" in item:
-                item_html = item_html.replace("{blurb}", item["blurb"])
 
             html_snippets.append(item_html)
             
