@@ -26,4 +26,4 @@ class ProjectValidator:
             text_data = file_pointer.read()
 
         content_data = json.loads(text_data)
-        return content_data
+        return content_data # JSON type

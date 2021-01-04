@@ -23,6 +23,30 @@ class Themer:
         self._project_directory = project_directory
         self._theme_directory = theme_directory
 
+    def get_snippets_html(self, content_json):
+        snippets_template = ""
+
+        with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
+            snippets_template = file_pointer.read()
+
+        html_snippets = []
+
+        for item in content_json:
+            item_html = snippets_template.replace("{title}", item["title"])
+            
+            tags_html = ""
+            for tag in item["tags"]:
+                tags_html += "<span class='tag'>{}</span>".format(tag)
+
+            item_html = item_html.replace("{tags}", tags_html)
+
+            if "blurb" in item:
+                item_html = item_html.replace("{blurb}", item["blurb"])
+
+            html_snippets.append(item_html)
+            
+        return html_snippets
+
 def _check_theme_files(theme_directory):
     if not os.path.isfile("{}/{}".format(theme_directory, LAYOUT_FILE_NAME)):
         print("Theme is missing layout file {}".format(LAYOUT_FILE_NAME))

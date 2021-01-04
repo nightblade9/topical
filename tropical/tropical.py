@@ -18,4 +18,5 @@ class Tropical:
         project_directory = args[1]
 
         content_data = ProjectValidator(project_directory).get_data()
-        Themer(project_directory) # validate theme directory
+        themer = Themer(project_directory) # validate theme directory
+        themer.get_snippets_html(content_data)
