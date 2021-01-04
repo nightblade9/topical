@@ -35,3 +35,20 @@ Finally, run `topical` to generte the output.  I haven't bundled this as a `pip`
 - `python main.py /path/to/project/folder`
 
 You can customize the theme by hand as you wish, or replace it outright.
+
+# Designing a Theme
+
+TBD. For now, inspect the existing ones and code and reverse-engineer how they work. Quick reference below.
+
+
+## layout.html
+
+- `content`: actual content (e.g. list of snippets)
+- `siteName`: site name (from config)
+- `pageTitle`: specific page title (e.g. "JRPG tag")
+
+# snippet.html
+
+- `title`: page title
+- `tags`: each is individually wrapped in `span class="tag"`
+- `blurb`: blurb (if specified)
