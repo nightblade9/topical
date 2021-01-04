@@ -1,5 +1,5 @@
 #!/usr/bin/python
 import sys
-from topical.topical import Topical
+from tropical.tropical import Tropical
 
-Topical().run(sys.argv)
+Tropical().run(sys.argv)

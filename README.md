@@ -1,4 +1,4 @@
-# Topical
+# Tropical
 
 Static website generator for link collections with metadata. Features:
 
@@ -8,7 +8,7 @@ Static website generator for link collections with metadata. Features:
 
 # Usage
 
-Create a new directory for your topical project. (Bonus points if you version-control it.) Within that directory, create a file called `data.json`. Each entry needs a `title`, `url`, and `tags`; `blurb` is optional. Example:
+Create a new directory for your tropical project. (Bonus points if you version-control it.) Within that directory, create a file called `data.json`. Each entry needs a `title`, `url`, and `tags`; `blurb` is optional. Example:
 
 ```json
 [
@@ -26,12 +26,12 @@ Create a new directory for your topical project. (Bonus points if you version-co
 ]
 ```
 
-Next, copy the `default-theme` directory from `topical` to your project root and rename it to `theme`.
+Next, copy the `default-theme` directory from `tropical` to your project root and rename it to `theme`.
 
-Finally, run `topical` to generte the output.  I haven't bundled this as a `pip` module yet, so for now, you need to run it by hand.
+Finally, run `tropical` to generte the output.  I haven't bundled this as a `pip` module yet, so for now, you need to run it by hand.
 
-- `git clone https://github.com/nightblade/topical`
-- `cd topical`
+- `git clone https://github.com/nightblade/tropical`
+- `cd tropical`
 - `python main.py /path/to/project/folder`
 
 You can customize the theme by hand as you wish, or replace it outright.
