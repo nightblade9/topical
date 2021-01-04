@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import json, os, sys
-from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME
+from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME
 
 class Themer:
     def __init__(self, project_directory):
@@ -23,7 +23,24 @@ class Themer:
         self._project_directory = project_directory
         self._theme_directory = theme_directory
 
-    def get_snippets_html(self, content_json):
+        with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME), 'r') as file_pointer:
+            self._layout_html = file_pointer.read()
+
+    def generate_output(self, content_data):
+        blurbs = self._get_snippets_html(content_data)
+
+        all_files = {} # filename => content
+
+        all_files[INDEX_FILENAME] = self._apply_layout_html(str.join("\n", blurbs), "Home")
+        return all_files
+    
+    def _apply_layout_html(self, content_html, title):
+        final_html = self._layout_html.replace("{content}", content_html)
+        # TODO: site name comes from config
+        final_html = final_html.replace("{pageTitle}", title).replace("{siteName}", "Game Design Library")
+        return final_html
+
+    def _get_snippets_html(self, content_json):
         snippets_template = ""
 
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:

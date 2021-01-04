@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import sys
+import os, shutil, sys
+from tropical.constants import OUTPUT_DIRECTORY
 from tropical.io.project_validator import ProjectValidator
 from tropical.io.themer import Themer
 
@@ -9,8 +10,6 @@ class Tropical:
         pass
 
     def run(self, args):
-        print("Hello, Tropical! {}".format(args))
-        
         if len(args) != 2:
             print("Usage: python main.py <tropical project directory>")
             sys.exit(1)
@@ -19,4 +18,19 @@ class Tropical:
 
         content_data = ProjectValidator(project_directory).get_data()
         themer = Themer(project_directory) # validate theme directory
-        themer.get_snippets_html(content_data)
+        
+        all_files = themer.generate_output(content_data)
+        output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)
+
+        if os.path.isdir(output_directory):
+            shutil.rmtree(output_directory) # nuke it from orbit
+        os.mkdir(output_directory)
+
+        for filename in all_files:
+            contents = all_files[filename]
+            output_filename = "{}/{}".format(output_directory, filename)
+
+            with open(output_filename, 'w') as file_pointer:
+                file_pointer.write(contents)
+                file_pointer.close()
+
