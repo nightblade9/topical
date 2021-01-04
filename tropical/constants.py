@@ -11,3 +11,4 @@ SNIPPET_FILE_NAME = "snippet.html"
 # Output constants
 OUTPUT_DIRECTORY = "output"
 INDEX_FILENAME = "index.html"
+TAGS_DIRECTORY = "tags"
