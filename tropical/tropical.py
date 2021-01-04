@@ -2,6 +2,7 @@
 
 import sys
 from tropical.io.project_validator import ProjectValidator
+from tropical.io.themer import Themer
 
 class Tropical:
     def __init__(self):
@@ -17,6 +18,4 @@ class Tropical:
         project_directory = args[1]
 
         content_data = ProjectValidator(project_directory).get_data()
-        print("Gotcha, data is: {}".format(content_data))
-
-        
+        Themer(project_directory) # validate theme directory
