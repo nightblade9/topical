@@ -84,6 +84,23 @@
                     var searchWord = searchWords[k];
                     if (blurb.indexOf(searchWord.toLowerCase()) > -1)
                     {
+                        isMatch = true;
+                        matchingItems.push(item);
+                        break;
+                    }
+                }
+            }
+
+            // Finally, search the title.
+            if (!isMatch)
+            {
+                var title = item["title"].toLowerCase();
+                for (var k = 0; k < searchWords.length; k++)
+                {
+                    var searchWord = searchWords[k];
+                    if (title.indexOf(searchWord.toLowerCase()) > -1)
+                    {
+                        isMatch = true;
                         matchingItems.push(item);
                         break;
                     }
