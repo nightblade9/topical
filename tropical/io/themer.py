@@ -88,7 +88,7 @@ class Themer:
  
             tags_html = ""
             for tag in item["tags"]:
-                tags_html += "<span class='tag'>{}</span>".format(tag)
+                tags_html += "<span class='tag'><a href='{}/{}.html'>{}</a></span>".format(TAGS_DIRECTORY, tag, tag)
 
             item_html = item_html.replace("{tags}", tags_html)
 
