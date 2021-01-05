@@ -44,4 +44,6 @@ class Tropical:
                 file_pointer.close()
 
         stop_time = time.time()
-        print("Generated {} pages and {} snippets across {} tags in {}s".format(len(all_files), len(content_data), num_tags, (stop_time - start_time)))
+        
+        site_summary = "{} pages and {} items across {} tags".format(len(all_files), len(content_data), num_tags)
+        print("{} - generated in {}s".format(site_summary, (stop_time - start_time)))
