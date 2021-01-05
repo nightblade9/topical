@@ -99,6 +99,8 @@ class Themer:
     # item is a dictionary of item attributes
     # tags_link_relative_url is a relative URL to /tags. When generating snippets on /tags/foo,
     # these have to be relative to ..
+
+    # NB: keep in synch with search.html (JS rendering)
     def _get_snippet_html(self, item, tags_link_relative_url = ""):
         snippets_template = ""
 

@@ -63,16 +63,24 @@
         for (var i = 0; i < matchingItems.length; i++)
         {
             var item = matchingItems[i];
-            // TODO: how do I get the snippet HTML here? How do I DRY tag/URL rendering? (Can't, it's Python and JS.)
+
+            var tagsHtml = "";
+            for (var j = 0; j < tags.length; j++)
+            {
+                // Search page is always in root dir, so absolute path is not necessary here
+                tagsHtml += "<span class='tag'><a href='tags/" + tags[j] + ".html" + "'>" + tags[j] + "</a></span>"
+            }
+            
+            // NB: keep in synch with server-side rendering (themer.py / _get_snippet_html)
             finalHtml += `
             <div class='snippet'>
                 <h1>{title}</h1>
                 <p class='url'>{url}</p>
                 <p>{tags}</p>
                 <p>{blurb}</p>
-            </div>`.replace("{title}", item["title"])
-                .replace("{url}", item["url"])
-                .replace("{tags}", item["tags"])
+            </div>`.replace("{title}", '<a href="' + item["url"] + '">' + item["title"] + "</a>")
+                .replace("{url}", '<a href="' + item["url"] + '">' + item["url"] + "</a>")
+                .replace("{tags}", tagsHtml)
                 .replace("{blurb}", item["blurb"]);
         }
         setContent(finalHtml);
