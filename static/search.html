@@ -29,16 +29,38 @@
     }
 
     onSearch = (searchQuery) => {
-        if (searchQuery == null)
-        {
-            // came from a form submission, not a parameter
-            searchQuery = document.getElementById("query").value;
-        }
-        
-        searchQuery = decodeURI(searchQuery);
-        document.getElementById("query").value = searchQuery;
-        
-        this.setContent("HERP DERP: " + searchQuery);
+        // Make sure the document is ready and window.data is defined, before proceeding.
+        document.addEventListener("DOMContentLoaded", (event) => {
+
+            if (searchQuery == null)
+            {
+                // came from a form submission, not a parameter
+                searchQuery = document.getElementById("query").value;
+            }
+            
+            searchQuery = decodeURI(searchQuery);
+            document.getElementById("query").value = searchQuery;
+
+            var allData = JSON.parse(window.data);
+
+            // Too hard/complicated to write as a single lambda/filter
+            var matchingItems = [];
+            for (var i = 0; i < allData.length; i++)
+            {
+                var item = allData[i];
+                var tags = item["tags"];
+                for (var j = 0; j < tags.length; j++)
+                {
+                    if (tags[j].toLowerCase() == searchQuery.toLowerCase())
+                    {
+                        matchingItems.push(item);
+                        break;
+                    }
+                }
+            }
+            
+            this.setContent("Matches: " + matchingItems);
+        });
     }
 
     main();

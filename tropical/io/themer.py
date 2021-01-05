@@ -66,11 +66,17 @@ class Themer:
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
 
         # /search.html, partial page content is in static/search.html. Embedded JS.
-        search_template_content = ""
+        search_template_content:str = ""
         with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE), 'r') as file_handle:
             search_template_content = file_handle.read()
 
-        search_html = self._apply_layout_html(search_template_content, "Search")
+        # Embed all data into a variable in our search page as window.data. Use original file: simply assigning
+        # content_data generates JSON with single-quoted properties, which breaks when we parse it in JS.
+        # Sadly, this obliterates all apostrophes in the content. 'Tis a shame.
+        json_data:str = str(content_data).replace("'", '"')
+        data_script = "<script type='text/javascript'>window.data='{}';</script>".format(json_data)
+
+        search_html = self._apply_layout_html(search_template_content + data_script, "Search")
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         return all_files
