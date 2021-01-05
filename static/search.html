@@ -1,10 +1,38 @@
-<div id="main"></div>
+<div id="main">
+    <form onsubmit="onSearch()" action="#">
+        <label for="query">Search:</label>
+        <input id="query" type="text" />
+        <input type="submit" value="Search">
+    </form>
+
+    <label id="output" />
+</div>
 
 <script type="text/javascript">
-
-    function setContent(html) {
-        document.getElementById("main").innerHTML = html;
+    // TODO: externailze in .js file
+    setContent = (html) => {
+        document.getElementById("output").innerHTML = html;
     }
 
-    setInterval(() => setContent("Hello, world! " + location.search), 1000);
+    main = () => {
+        var queryParameters = location.search.slice(1).split("&");
+        for (var i = 0; i < queryParameters.length; i++)
+        {
+            var params = queryParameters[i].split('=');
+            var key = params[0];
+            var value = decodeURI(params[1]);
+            console.log("K=" + key + " V=" + value);
+            if (key.toLowerCase() == "query") {
+                this.setContent("Searching for: <strong>" + value + "</strong>");
+                document.getElementById("query").value = value;
+            }
+        }
+    }
+
+    onSearch = () => {
+        this.setContent("HERP DERP: " + document.getElementById("query").value);
+    }
+
+    main();
+
 </script>
