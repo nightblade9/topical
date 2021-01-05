@@ -40,6 +40,7 @@ You can customize the theme by hand as you wish, or replace it outright.
 
 TBD. For now, inspect the existing ones and code and reverse-engineer how they work. Quick reference below.
 
+Note that all CSS and images must be embedded within `layout.html` itself, because we can't guarantee/support path rewriting or using absolute directories (makes previewing your changes a pain otherwise).
 
 ## layout.html
 
@@ -49,7 +50,7 @@ TBD. For now, inspect the existing ones and code and reverse-engineer how they w
 
 # snippet.html
 
-- `title`: page title
-- `url`: page URL
+- `title`: Page title. Gets converted into a link to the URL.
+- `url`: Page URL. Converted to a link.
 - `tags`: each is individually wrapped in `span class="tag"`
 - `blurb`: blurb (if specified)
