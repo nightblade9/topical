@@ -132,7 +132,9 @@
                 .replace("{tags}", tagsHtml)
                 .replace("{blurb}", item["blurb"]);
         }
-        setContent(finalHtml);
+        
+        var header = "<h1>" + matchingItems.length + " items matching " + searchQuery + "</h1>";
+        setContent(header + finalHtml);
     }
 
     main();
