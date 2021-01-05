@@ -58,7 +58,7 @@ class Themer:
 
         tag_index_html = "<h1>Items by Tag</h1>\n<ul>\n"
         for tag in num_tags_in_order:
-            tag_index_html += "<li>{} ({} items)</li>".format(tag, num_tags_in_order[tag])
+            tag_index_html += "<li><a href='../{}/{}.html'>{}</a> ({} items)</li>".format(TAGS_DIRECTORY, tag, tag, num_tags_in_order[tag])
 
         tag_index_html += "</ul>\n"
         tag_index_html = self._apply_layout_html(tag_index_html, "tags")
