@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
+from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE
 
 class Themer:
     def __init__(self, project_directory):
@@ -51,7 +52,7 @@ class Themer:
             all_files["{}/{}.html".format(TAGS_DIRECTORY, tag)] = tag_page
             num_tags[tag] = len(tagged_items)
         
-        # /tags, an index of tag with count, sorted descendingly by count
+        # /tags/index.html, an index of tag with count, sorted descendingly by count
         sorted_list = sorted(num_tags.items(), key = lambda x: x[1])
         sorted_list.reverse()
         num_tags_in_order = dict(sorted_list)
@@ -61,8 +62,16 @@ class Themer:
             tag_index_html += "<li><a href='../{}/{}.html'>{}</a> ({} items)</li>".format(TAGS_DIRECTORY, tag, tag, num_tags_in_order[tag])
 
         tag_index_html += "</ul>\n"
-        tag_index_html = self._apply_layout_html(tag_index_html, "tags")
+        tag_index_html = self._apply_layout_html(tag_index_html, "All Tags")
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
+
+        # /search.html, partial page content is in static/search.html. Embedded JS.
+        search_template_content = ""
+        with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE), 'r') as file_handle:
+            search_template_content = file_handle.read()
+
+        search_html = self._apply_layout_html(search_template_content, "Search")
+        all_files[SEARCH_OUTPUT_FILE] = search_html
 
         return all_files
     

@@ -12,3 +12,8 @@ SNIPPET_FILE_NAME = "snippet.html"
 OUTPUT_DIRECTORY = "output"
 INDEX_FILENAME = "index.html"
 TAGS_DIRECTORY = "tags"
+
+# Search constants
+STATIC_CONTENT_DIRECTORY = "static"
+SEARCH_TEMPLATE_FILE = "search.html"
+SEARCH_OUTPUT_FILE = "search.html"

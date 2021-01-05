@@ -1,0 +1,10 @@
+<div id="main"></div>
+
+<script type="text/javascript">
+
+    function setContent(html) {
+        document.getElementById("main").innerHTML = html;
+    }
+
+    setInterval(() => setContent("Hello, world! " + location.search), 1000);
+</script>
