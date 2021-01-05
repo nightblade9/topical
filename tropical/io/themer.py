@@ -41,10 +41,9 @@ class Themer:
         for tag in all_tags:
             tagged_items = _get_snippets_tagged_with(content_data, tag)
 
-            tagged_snippets_html = "<ul>\n"
+            tagged_snippets_html = ""
             for item in tagged_items:
-                tagged_snippets_html += "\t<li>{}</li>\n".format(item["title"])
-            tagged_snippets_html += "</ul>\n"
+                tagged_snippets_html += self._get_snippet_html(item, "../")
 
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
             tag_page = self._apply_layout_html(tag_content, tag)
@@ -74,29 +73,35 @@ class Themer:
         return final_html
 
     def _get_snippets_html(self, content_json):
+        html_snippets = []
+
+        for item in content_json:
+            item_html = self._get_snippet_html(item)
+            html_snippets.append(item_html)
+            
+        return html_snippets
+
+    # item is a dictionary of item attributes
+    # tags_link_relative_url is a relative URL to /tags. When generating snippets on /tags/foo,
+    # these have to be relative to ..
+    def _get_snippet_html(self, item, tags_link_relative_url = ""):
         snippets_template = ""
 
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
             snippets_template = file_pointer.read()
+        
+        item_html = snippets_template
+        item_html = item_html.replace("{title}", "<a href='{}'>{}</a>".format(item["url"], item["title"]))
+        item_html = item_html.replace("{url}", "<a href='{}'>{}</a>".format(item["url"], item["url"]))
 
-        html_snippets = []
+        tags_html = ""
+        for tag in item["tags"]:
+            tags_html += "<span class='tag'><a href='{}{}/{}.html'>{}</a></span>".format(tags_link_relative_url, TAGS_DIRECTORY, tag, tag)
 
-        for item in content_json:
-            item_html = snippets_template
-            item_html = item_html.replace("{title}", "<a href='{}'>{}</a>".format(item["url"], item["title"]))
-            item_html = item_html.replace("{url}", "<a href='{}'>{}</a>".format(item["url"], item["url"]))
- 
-            tags_html = ""
-            for tag in item["tags"]:
-                tags_html += "<span class='tag'><a href='{}/{}.html'>{}</a></span>".format(TAGS_DIRECTORY, tag, tag)
+        item_html = item_html.replace("{tags}", tags_html)
 
-            item_html = item_html.replace("{tags}", tags_html)
-
-            item_html = item_html.replace("{blurb}", item["blurb"])
-
-            html_snippets.append(item_html)
-            
-        return html_snippets
+        item_html = item_html.replace("{blurb}", item["blurb"])
+        return item_html
 
 def _get_all_tags(content_data):
     all_tags = [] # retain original case
