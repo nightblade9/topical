@@ -1,5 +1,5 @@
 <div id="main">
-    <form onsubmit="onSearch()" action="#">
+    <form onsubmit="onSearch(); return false // don't postback">
         <label for="query">Search:</label>
         <input id="query" type="text" />
         <input type="submit" value="Search">
@@ -20,17 +20,25 @@
         {
             var params = queryParameters[i].split('=');
             var key = params[0];
-            var value = decodeURI(params[1]);
-            console.log("K=" + key + " V=" + value);
+            var value = params[1];
             if (key.toLowerCase() == "query") {
-                this.setContent("Searching for: <strong>" + value + "</strong>");
-                document.getElementById("query").value = value;
+                this.onSearch(value);
+                break;
             }
         }
     }
 
-    onSearch = () => {
-        this.setContent("HERP DERP: " + document.getElementById("query").value);
+    onSearch = (searchQuery) => {
+        if (searchQuery == null)
+        {
+            // came from a form submission, not a parameter
+            searchQuery = document.getElementById("query").value;
+        }
+        
+        searchQuery = decodeURI(searchQuery);
+        document.getElementById("query").value = searchQuery;
+        
+        this.setContent("HERP DERP: " + searchQuery);
     }
 
     main();
