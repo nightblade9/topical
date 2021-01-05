@@ -22,45 +22,60 @@
             var key = params[0];
             var value = params[1];
             if (key.toLowerCase() == "query") {
-                this.onSearch(value);
+                // Make sure the document is ready and window.data is defined, before proceeding.
+                document.addEventListener("DOMContentLoaded", (event) => {
+                    this.onSearch(value);
+                });
                 break;
             }
         }
     }
 
     onSearch = (searchQuery) => {
-        // Make sure the document is ready and window.data is defined, before proceeding.
-        document.addEventListener("DOMContentLoaded", (event) => {
+        if (searchQuery == null)
+        {
+            // came from a form submission, not a parameter
+            searchQuery = document.getElementById("query").value;
+        }
+        
+        searchQuery = decodeURI(searchQuery);
+        document.getElementById("query").value = searchQuery;
 
-            if (searchQuery == null)
+        var allData = JSON.parse(window.data);
+
+        // Too hard/complicated to write as a single lambda/filter
+        var matchingItems = [];
+        for (var i = 0; i < allData.length; i++)
+        {
+            var item = allData[i];
+            var tags = item["tags"];
+            for (var j = 0; j < tags.length; j++)
             {
-                // came from a form submission, not a parameter
-                searchQuery = document.getElementById("query").value;
-            }
-            
-            searchQuery = decodeURI(searchQuery);
-            document.getElementById("query").value = searchQuery;
-
-            var allData = JSON.parse(window.data);
-
-            // Too hard/complicated to write as a single lambda/filter
-            var matchingItems = [];
-            for (var i = 0; i < allData.length; i++)
-            {
-                var item = allData[i];
-                var tags = item["tags"];
-                for (var j = 0; j < tags.length; j++)
+                if (tags[j].toLowerCase() == searchQuery.toLowerCase())
                 {
-                    if (tags[j].toLowerCase() == searchQuery.toLowerCase())
-                    {
-                        matchingItems.push(item);
-                        break;
-                    }
+                    matchingItems.push(item);
+                    break;
                 }
             }
-            
-            this.setContent("Matches: " + matchingItems);
-        });
+        }
+        
+        var finalHtml = "";
+        for (var i = 0; i < matchingItems.length; i++)
+        {
+            var item = matchingItems[i];
+            // TODO: how do I get the snippet HTML here? How do I DRY tag/URL rendering? (Can't, it's Python and JS.)
+            finalHtml += `
+            <div class='snippet'>
+                <h1>{title}</h1>
+                <p class='url'>{url}</p>
+                <p>{tags}</p>
+                <p>{blurb}</p>
+            </div>`.replace("{title}", item["title"])
+                .replace("{url}", item["url"])
+                .replace("{tags}", item["tags"])
+                .replace("{blurb}", item["blurb"]);
+        }
+        setContent(finalHtml);
     }
 
     main();
