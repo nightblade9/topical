@@ -99,13 +99,14 @@ class Themer:
         return html_snippets
 
 def _get_all_tags(content_data):
-    all_tags = []
+    all_tags = [] # retain original case
+    normalized_tags = []
 
     for item in content_data:
         for tag in item["tags"]:
             normalized_tag = tag.lower()
-            if not normalized_tag in all_tags:
-                all_tags.append(normalized_tag)
+            if not normalized_tag in normalized_tags:
+                all_tags.append(tag)
     
     return all_tags
 
