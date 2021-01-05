@@ -36,6 +36,10 @@ Finally, run `tropical` to generte the output.  I haven't bundled this as a `pip
 
 You can customize the theme by hand as you wish, or replace it outright.
 
+# Local Development
+
+You need Python 3.5+ and a modern browser (i.e. not IE6-8). To run locally, just run `python main.py <path to project repo>`, then from the `output` directory, run `python -m http.server` and hit up `localhost:8000`.
+
 # Designing a Theme
 
 TBD. For now, inspect the existing ones and code and reverse-engineer how they work. Quick reference below.
@@ -44,13 +48,14 @@ Note that all CSS and images must be embedded within `layout.html` itself, becau
 
 ## layout.html
 
-- `content`: actual content (e.g. list of snippets)
-- `siteName`: site name (from config)
-- `pageTitle`: specific page title (e.g. "JRPG tag")
+- `{content}`: actual content (e.g. list of snippets)
+- `{siteName}`: site name (from config)
+- `{pageTitle}`: specific page title (e.g. "JRPG tag")
+- `{search}`: the search form
 
 # snippet.html
 
-- `title`: Page title. Gets converted into a link to the URL.
-- `url`: Page URL. Converted to a link.
-- `tags`: each is individually wrapped in `span class="tag"`
-- `blurb`: blurb (if specified)
+- `{title}`: Page title. Gets converted into a link to the URL.
+- `{url}`: Page URL. Converted to a link.
+- `{tags}`: each is individually wrapped in `span class="tag"`
+- `{blurb}`: blurb (if specified)

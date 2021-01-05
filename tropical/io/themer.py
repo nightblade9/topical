@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
-from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE
+from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE
 
 class Themer:
     def __init__(self, project_directory):
@@ -24,8 +24,13 @@ class Themer:
         self._project_directory = project_directory
         self._theme_directory = theme_directory
 
+        # load layout HTML
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME), 'r') as file_pointer:
             self._layout_html = file_pointer.read()
+
+        # load search form HTML
+        with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_FORM_TEMPLATE_FILE), 'r') as file_pointer:
+            self._search_form_html = file_pointer.read()
 
     def generate_output(self, content_data):
         blurbs = self._get_snippets_html(content_data)
@@ -76,15 +81,23 @@ class Themer:
         json_data:str = str(content_data).replace("'", '"')
         data_script = "<script type='text/javascript'>window.data='{}';</script>".format(json_data)
 
-        search_html = self._apply_layout_html(search_template_content + data_script, "Search")
+        search_html = self._apply_layout_html(search_template_content + data_script, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         return all_files
     
-    def _apply_layout_html(self, content_html, title):
-        final_html = self._layout_html.replace("{content}", content_html)
+    def _apply_layout_html(self, content_html, title, add_search_form = True):
         # TODO: site name comes from config
-        final_html = final_html.replace("{pageTitle}", title).replace("{siteName}", "Game Design Library")
+        final_html = self._layout_html.replace("{content}", content_html) \
+            .replace("{pageTitle}", title) \
+            .replace("{siteName}", "Game Design Library")
+
+        search_html = self._search_form_html
+        if not add_search_form:
+            search_html = "" # remove from layout
+
+        final_html = final_html.replace("{search}", search_html)
+
         return final_html
 
     def _get_snippets_html(self, content_json):
