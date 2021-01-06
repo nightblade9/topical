@@ -49,7 +49,7 @@ class Themer:
 
             tagged_snippets_html = ""
             for item in tagged_items:
-                tagged_snippets_html += self._get_snippet_html(item, "../")
+                tagged_snippets_html += self._get_snippet_html(item)
 
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
             tag_page = self._apply_layout_html(tag_content, tag)
@@ -64,7 +64,7 @@ class Themer:
 
         tag_index_html = "<h1>Items by Tag</h1>\n<ul>\n"
         for tag in num_tags_in_order:
-            tag_index_html += "<li><a href='../{}/{}.html'>{}</a> ({} items)</li>".format(TAGS_DIRECTORY, tag, tag, num_tags_in_order[tag])
+            tag_index_html += "<li><a href='/{}/{}.html'>{}</a> ({} items)</li>".format(TAGS_DIRECTORY, tag, tag, num_tags_in_order[tag])
 
         tag_index_html += "</ul>\n"
         tag_index_html = self._apply_layout_html(tag_index_html, "All Tags")
@@ -110,11 +110,8 @@ class Themer:
         return html_snippets
 
     # item is a dictionary of item attributes
-    # tags_link_relative_url is a relative URL to /tags. When generating snippets on /tags/foo,
-    # these have to be relative to ..
-
     # NB: keep in synch with search.html (JS rendering)
-    def _get_snippet_html(self, item, tags_link_relative_url = ""):
+    def _get_snippet_html(self, item):
         snippets_template = ""
 
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
@@ -126,7 +123,7 @@ class Themer:
 
         tags_html = ""
         for tag in item["tags"]:
-            tags_html += "<span class='tag'><a href='{}{}/{}.html'>{}</a></span>".format(tags_link_relative_url, TAGS_DIRECTORY, tag, tag)
+            tags_html += "<span class='tag'><a href='/{}/{}.html'>{}</a></span>".format(TAGS_DIRECTORY, tag, tag)
 
         item_html = item_html.replace("{tags}", tags_html)
 

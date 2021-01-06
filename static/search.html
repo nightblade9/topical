@@ -116,8 +116,7 @@
             var tagsHtml = "";
             for (var j = 0; j < tags.length; j++)
             {
-                // Search page is always in root dir, so absolute path is not necessary here
-                tagsHtml += "<span class='tag'><a href='tags/" + tags[j] + ".html" + "'>" + tags[j] + "</a></span>"
+                tagsHtml += "<span class='tag'><a href='/tags/" + tags[j] + ".html" + "'>" + tags[j] + "</a></span>"
             }
             
             // NB: keep in synch with server-side rendering (themer.py / _get_snippet_html)
