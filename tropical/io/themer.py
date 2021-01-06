@@ -94,7 +94,9 @@ class Themer:
         
         # Static pages, about (TODO), and index last, since it has the summary of stats.
         stats = "{} items across {} tags".format(len(blurbs), len(unqiue_tags))
-        all_files[INDEX_FILENAME] = self._apply_layout_html(str.join("\n", blurbs), "Home")
+        intro_html = "<div class='snippet>{}</div>".format(stats)
+        index_html = "{}{}".format(intro_html, str.join("\n", blurbs))
+        all_files[INDEX_FILENAME] = self._apply_layout_html(index_html, "Home")
 
         return { "data": all_files, "stats": stats }
     
