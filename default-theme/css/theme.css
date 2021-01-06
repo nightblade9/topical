@@ -1,0 +1,48 @@
+body {
+    background-color: #e6e6e6;
+    padding: 0px;
+    margin: 0px;
+}
+
+a {
+    color: #737373;
+    text-decoration: none;
+}
+
+#content {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    width: 960px;
+}
+
+h1 {
+    font-family:  'Calibri', 'serif';
+    margin: 4px;
+}
+
+.snippet {
+    background-color: white;
+    border: 3px solid #999999;
+    padding: 8px;
+    margin: 4px;
+}
+
+.tag {
+    font-family: 'Consolas', 'monaco', 'monospace';
+    padding: 4px;
+    margin: 4px;
+    background: #737373;
+    color: white;
+}
+
+/* tag links should be white, not the link colour */
+.tag a {
+    color: white;
+}
+
+.url {
+    font-family: 'Consolas', 'monaco', 'monospace';
+    padding: 0px;
+    margin: 0px;
+}
