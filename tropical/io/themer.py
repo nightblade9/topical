@@ -37,14 +37,22 @@ class Themer:
 
         all_files = {} # filename => content
 
-        # Static pages: index, about (TODO), etc.
-        all_files[INDEX_FILENAME] = self._apply_layout_html(str.join("\n", blurbs), "Home")
-
         # Tag pages
         all_tags = _get_all_tags(content_data)
         num_tags = {} # tag => number
+        unqiue_tags = []
 
         for tag in all_tags:
+
+            is_duplicate = False
+            for seen_before in unqiue_tags:
+                if seen_before.lower() == tag.lower():
+                    is_duplicate = True
+                    break
+            if not is_duplicate:
+                unqiue_tags.append(tag) # preserve case
+            
+        for tag in unqiue_tags:
             tagged_items = _get_snippets_tagged_with(content_data, tag)
 
             tagged_snippets_html = ""
@@ -83,8 +91,12 @@ class Themer:
 
         search_html = self._apply_layout_html(search_template_content + data_script, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
+        
+        # Static pages, about (TODO), and index last, since it has the summary of stats.
+        stats = "{} items across {} tags".format(len(blurbs), len(unqiue_tags))
+        all_files[INDEX_FILENAME] = self._apply_layout_html(str.join("\n", blurbs), "Home")
 
-        return all_files
+        return { "data": all_files, "stats": stats }
     
     def _apply_layout_html(self, content_html, title, add_search_form = True):
         # TODO: site name comes from config

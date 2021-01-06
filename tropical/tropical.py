@@ -21,7 +21,9 @@ class Tropical:
 
         start_time = time.time()
         
-        all_files = themer.generate_output(content_data)
+        output = themer.generate_output(content_data)
+        all_files = output["data"]
+        stats = output["stats"]
         output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)
 
         if os.path.isdir(output_directory):
@@ -30,14 +32,9 @@ class Tropical:
         os.mkdir(output_directory)
         os.mkdir("{}/{}".format(output_directory, TAGS_DIRECTORY))
 
-        num_tags = 0
-
         for filename in all_files:
             contents = all_files[filename]
             output_filename = "{}/{}".format(output_directory, filename)
-
-            if TAGS_DIRECTORY in filename:
-                num_tags += 1
 
             with open(output_filename, 'w') as file_pointer:
                 file_pointer.write(contents)
@@ -55,5 +52,4 @@ class Tropical:
 
         stop_time = time.time()
         
-        site_summary = "{} pages and {} items across {} tags".format(len(all_files), len(content_data), num_tags)
-        print("{} - generated in {}s".format(site_summary, (stop_time - start_time)))
+        print("{} pages, {} - generated in {}s".format(len(all_files), stats, (stop_time - start_time)))
