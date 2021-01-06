@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, shutil, sys, time
+import glob, os, shutil, sys, time
 from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY
 from tropical.io.project_validator import ProjectValidator
 from tropical.io.themer import Themer
@@ -42,6 +42,10 @@ class Tropical:
             with open(output_filename, 'w') as file_pointer:
                 file_pointer.write(contents)
                 file_pointer.close()
+
+        # copy static JS
+        for filename in glob.glob("static/*.js"):
+            shutil.copy(filename, output_directory)
 
         stop_time = time.time()
         
