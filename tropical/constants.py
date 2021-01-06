@@ -21,3 +21,4 @@ SEARCH_FORM_TEMPLATE_FILE = "searchForm.html"
 
 # Config
 CONFIG_FILE_NAME = "config.json"
+PAGES_DIRECTORY = "pages"

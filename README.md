@@ -36,16 +36,20 @@ Finally, run `tropical` to generte the output.  I haven't bundled this as a `pip
 
 You can customize the theme by hand as you wish, or replace it outright.
 
-# Local Development
-
-You need Python 3.5+ and a modern browser (i.e. not IE6-8). To run locally, just run `python main.py <path to project repo>`, then from the `output` directory, run `python -m http.server` and hit up `localhost:8000`.
-
 # Additional Configuration
 
 You can include a `config.json` file in your project directory. Current supported fields:
 
 - `intro`: a little introductory blurb to display on the home page, before the stats list.
 - `intro_suffix`: anything to display after the intro stats, eg. closing `div` tag.
+
+# Additional Pages
+
+You can add additional static HTML pages to your project; simply create a `pages` directory and add any `.html` files. Like other files, they will be combined with the theme and copied to the output directory.
+
+# Local Development
+
+You need Python 3.5+ and a modern browser (i.e. not IE6-8). To run locally, just run `python main.py <path to project repo>`, then from the `output` directory, run `python -m http.server` and hit up `localhost:8000`.
 
 # Designing a Theme
 

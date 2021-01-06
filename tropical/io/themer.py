@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import json, os, sys
+import glob, json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
-from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE
+from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY
 
 class Themer:
     def __init__(self, project_directory):
@@ -91,7 +91,18 @@ class Themer:
 
         search_html = self._apply_layout_html(search_template_content + data_script, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
-        
+
+        # Copy user-made pages
+        for filename in glob.glob("{}/{}/*.html".format(self._project_directory, PAGES_DIRECTORY)):
+            contents = ""
+
+            just_filename = filename[filename.rindex(os.path.sep) + 1 :]
+            title = just_filename[0 : just_filename.rindex('.')]
+            
+            with open(filename, 'r') as file_handle:
+                contents = file_handle.read()
+            contents = self._apply_layout_html(contents, title)
+            all_files[just_filename] = contents
         # Static pages, about (TODO), and index last, since it has the summary of stats.
         stats = "{} items across {} tags".format(len(blurbs), len(unqiue_tags))
         
