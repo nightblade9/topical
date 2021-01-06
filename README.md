@@ -44,7 +44,7 @@ You need Python 3.5+ and a modern browser (i.e. not IE6-8). To run locally, just
 
 TBD. For now, inspect the existing ones and code and reverse-engineer how they work. Quick reference below.
 
-Note that all CSS and images must be embedded within `layout.html` itself, because we can't guarantee/support path rewriting or using absolute directories (makes previewing your changes a pain otherwise).
+Note that any external directories (images, CSS, JS, etc.) - but not files - will be copied from the theme directory to the output directory when you build the website. We highly recommend organizing all assets into directories within your theme.
 
 ## layout.html
 
