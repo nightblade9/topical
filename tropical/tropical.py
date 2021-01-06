@@ -58,4 +58,4 @@ class Tropical:
 
         stop_time = time.time()
         
-        print("{} pages, {} - generated in {}s".format(len(all_files), stats, (stop_time - start_time)))
+        print("{}, totaling {} pages - generated in {}s".format(stats, len(all_files), (stop_time - start_time)))

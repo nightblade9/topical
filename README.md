@@ -38,10 +38,7 @@ You can customize the theme by hand as you wish, or replace it outright.
 
 # Additional Configuration
 
-You can include a `config.json` file in your project directory. Current supported fields:
-
-- `intro`: a little introductory blurb to display on the home page, before the stats list.
-- `intro_suffix`: anything to display after the intro stats, eg. closing `div` tag.
+You can include a `config.json` file in your project directory. Currently, there are no supported fields.
 
 # Additional Pages
 
@@ -70,3 +67,9 @@ Note that any external directories (images, CSS, JS, etc.) - but not files - wil
 - `{url}`: Page URL. Converted to a link.
 - `{tags}`: each is individually wrapped in `span class="tag"`
 - `{blurb}`: blurb (if specified)
+
+## intro.html (optional)
+
+If present, a small intro blurb will be shown on the home page, using the contents of this file. 
+
+- `{stats}`: Site stats (number of items catalogued and number of tags).

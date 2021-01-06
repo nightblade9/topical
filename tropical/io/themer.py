@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import glob, json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
-from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY
+from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 
 class Themer:
     def __init__(self, project_directory):
@@ -107,12 +107,12 @@ class Themer:
         stats = "{} items across {} tags".format(len(blurbs), len(unqiue_tags))
         
         index_html = ""
-        if "intro" in config:
-            index_html = config["intro"] + " "
-        index_html += stats
-        if "intro_suffix" in config:
-            index_html += config["intro_suffix"]
+        intro_file_path = "{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, INTRO_FILE_NAME)
+        if os.path.isfile(intro_file_path):
+            with open(intro_file_path, 'r') as file_handle:
+                index_html = file_handle.read()
 
+        index_html = index_html.replace("{stats}", stats)
         index_html = "{}{}".format(index_html, str.join("\n", blurbs))
         all_files[INDEX_FILENAME] = self._apply_layout_html(index_html, "Home")
 
