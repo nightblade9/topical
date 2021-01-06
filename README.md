@@ -40,6 +40,13 @@ You can customize the theme by hand as you wish, or replace it outright.
 
 You need Python 3.5+ and a modern browser (i.e. not IE6-8). To run locally, just run `python main.py <path to project repo>`, then from the `output` directory, run `python -m http.server` and hit up `localhost:8000`.
 
+# Additional Configuration
+
+You can include a `config.json` file in your project directory. Current supported fields:
+
+- `intro`: a little introductory blurb to display on the home page, before the stats list.
+- `intro_suffix`: anything to display after the intro stats, eg. closing `div` tag.
+
 # Designing a Theme
 
 TBD. For now, inspect the existing ones and code and reverse-engineer how they work. Quick reference below.

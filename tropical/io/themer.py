@@ -32,7 +32,7 @@ class Themer:
         with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_FORM_TEMPLATE_FILE), 'r') as file_pointer:
             self._search_form_html = file_pointer.read()
 
-    def generate_output(self, content_data):
+    def generate_output(self, content_data, config):
         blurbs = self._get_snippets_html(content_data)
 
         all_files = {} # filename => content
@@ -94,8 +94,15 @@ class Themer:
         
         # Static pages, about (TODO), and index last, since it has the summary of stats.
         stats = "{} items across {} tags".format(len(blurbs), len(unqiue_tags))
-        intro_html = "<div class='snippet>{}</div>".format(stats)
-        index_html = "{}{}".format(intro_html, str.join("\n", blurbs))
+        
+        index_html = ""
+        if "intro" in config:
+            index_html = config["intro"] + " "
+        index_html += stats
+        if "intro_suffix" in config:
+            index_html += config["intro_suffix"]
+
+        index_html = "{}{}".format(index_html, str.join("\n", blurbs))
         all_files[INDEX_FILENAME] = self._apply_layout_html(index_html, "Home")
 
         return { "data": all_files, "stats": stats }

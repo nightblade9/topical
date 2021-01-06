@@ -18,3 +18,6 @@ STATIC_CONTENT_DIRECTORY = "static"
 SEARCH_TEMPLATE_FILE = "search.html"
 SEARCH_OUTPUT_FILE = "search.html"
 SEARCH_FORM_TEMPLATE_FILE = "searchForm.html"
+
+# Config
+CONFIG_FILE_NAME = "config.json"

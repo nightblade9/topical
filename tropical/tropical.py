@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import glob, os, shutil, sys, time
-from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
+import glob, json, os, shutil, sys, time
+from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, CONFIG_FILE_NAME
 from tropical.io.project_validator import ProjectValidator
 from tropical.io.themer import Themer
 
@@ -20,8 +20,14 @@ class Tropical:
         themer = Themer(project_directory) # validate theme directory
 
         start_time = time.time()
+
+        config = {}
+        config_file_path = "{}/{}".format(project_directory, CONFIG_FILE_NAME)
+        if os.path.isfile(config_file_path):
+            with open(config_file_path) as file_handle:
+                config = json.loads(file_handle.read())
         
-        output = themer.generate_output(content_data)
+        output = themer.generate_output(content_data, config)
         all_files = output["data"]
         stats = output["stats"]
         output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)
