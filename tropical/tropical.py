@@ -21,13 +21,7 @@ class Tropical:
 
         start_time = time.time()
 
-        config = {}
-        config_file_path = "{}/{}".format(project_directory, CONFIG_FILE_NAME)
-        if os.path.isfile(config_file_path):
-            with open(config_file_path) as file_handle:
-                config = json.loads(file_handle.read())
-        
-        output = themer.generate_output(content_data, config)
+        output = themer.generate_output(content_data)
         all_files = output["data"]
         stats = output["stats"]
         output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)
