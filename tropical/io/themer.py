@@ -3,6 +3,8 @@ import glob, json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
 from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 
+from tropical.content.tag_counter import get_unique_tags
+
 class Themer:
     def __init__(self, project_directory):
         if len(project_directory.strip()) == 0:
@@ -35,30 +37,18 @@ class Themer:
         # snippet HTML
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
             self._snippets_template = file_pointer.read()
-        
 
 
-    def generate_output(self, content_data, config):
+    def generate_output(self, content_data):
         blurbs = self._get_snippets_html(content_data)
 
         all_files = {} # filename => content
+        unique_tags:list = get_unique_tags(content_data)
 
         # Tag pages
-        all_tags = _get_all_tags(content_data)
         num_tags = {} # tag => number
-        unqiue_tags = []
-
-        for tag in all_tags:
-
-            is_duplicate = False
-            for seen_before in unqiue_tags:
-                if seen_before.lower() == tag.lower():
-                    is_duplicate = True
-                    break
-            if not is_duplicate:
-                unqiue_tags.append(tag) # preserve case
             
-        for tag in unqiue_tags:
+        for tag in unique_tags:
             tagged_items = _get_snippets_tagged_with(content_data, tag)
 
             tagged_snippets_html = ""
@@ -66,7 +56,7 @@ class Themer:
                 tagged_snippets_html += self._get_snippet_html(item)
 
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
-            tag_page = self._apply_layout_html(tag_content, tag)
+            tag_page = self.apply_layout_html(tag_content, tag)
 
             all_files["{}/{}.html".format(TAGS_DIRECTORY, tag)] = tag_page
             num_tags[tag] = len(tagged_items)
@@ -81,7 +71,7 @@ class Themer:
             tag_index_html += "<li><a href='/{}/{}.html'>{}</a> ({} items)</li>".format(TAGS_DIRECTORY, tag, tag, num_tags_in_order[tag])
 
         tag_index_html += "</ul>\n"
-        tag_index_html = self._apply_layout_html(tag_index_html, "All Tags")
+        tag_index_html = self.apply_layout_html(tag_index_html, "All Tags")
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
 
         # /search.html, partial page content is in static/search.html. Embedded JS.
@@ -99,7 +89,7 @@ class Themer:
         snippet_html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
         snippet_script = "<script type='text/javascript'>window.snippet='{}';</script>".format(snippet_html)
 
-        search_html = self._apply_layout_html(search_template_content + data_script + snippet_script, "Search", False)
+        search_html = self.apply_layout_html(search_template_content + data_script + snippet_script, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         # Copy user-made pages
@@ -111,10 +101,10 @@ class Themer:
             
             with open(filename, 'r') as file_handle:
                 contents = file_handle.read()
-            contents = self._apply_layout_html(contents, title)
+            contents = self.apply_layout_html(contents, title)
             all_files[just_filename] = contents
         # Static pages, about (TODO), and index last, since it has the summary of stats.
-        stats = "{} items across {} tags".format(len(blurbs), len(unqiue_tags))
+        stats = "{} items across {} tags".format(len(blurbs), len(unique_tags))
         
         index_html = ""
         intro_file_path = "{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, INTRO_FILE_NAME)
@@ -124,12 +114,16 @@ class Themer:
 
         index_html = index_html.replace("{stats}", stats)
         index_html = "{}{}".format(index_html, str.join("\n", blurbs))
-        all_files[INDEX_FILENAME] = self._apply_layout_html(index_html, "Home")
+        all_files[INDEX_FILENAME] = self.apply_layout_html(index_html, "Home")
 
         return { "data": all_files, "stats": stats }
     
-    def _apply_layout_html(self, content_html, title, add_search_form = True):
-        # TODO: site name comes from config
+    def apply_layout_html(self, content_html, title, add_search_form = True):
+        """
+        Applies the theme layout to the target HTML.
+        Swaps in the specified title.
+        Adds a search form to the body, if add_search_form is True.
+        """
         final_html = self._layout_html.replace("{content}", content_html) \
             .replace("{pageTitle}", title) \
             .replace("{siteName}", "Game Design Library")
@@ -166,18 +160,6 @@ class Themer:
 
         item_html = item_html.replace("{blurb}", item["blurb"])
         return item_html
-
-def _get_all_tags(content_data):
-    all_tags = [] # retain original case
-    normalized_tags = []
-
-    for item in content_data:
-        for tag in item["tags"]:
-            normalized_tag = tag.lower()
-            if not normalized_tag in normalized_tags:
-                all_tags.append(tag)
-    
-    return all_tags
 
 def _get_snippets_tagged_with(content_data, target_tag):
     related_items = []
