@@ -107,20 +107,13 @@ onSearch = (searchQuery) => {
             tagsHtml += "<span class='tag'><a href='/tags/" + tags[j] + ".html" + "'>" + tags[j] + "</a></span>"
         }
         
-        // NB: keep in synch with server-side rendering (themer.py / _get_snippet_html)
-        finalHtml += `
-        <div class='snippet'>
-            <h1>{title}</h1>
-            <p class='url'>{url}</p>
-            <p>{tags}</p>
-            <p>{blurb}</p>
-        </div>`.replace("{title}", '<a href="' + item["url"] + '">' + item["title"] + "</a>")
+        finalHtml += window.snippet.replace("{title}", '<a href="' + item["url"] + '">' + item["title"] + "</a>")
             .replace("{url}", '<a href="' + item["url"] + '">' + item["url"] + "</a>")
             .replace("{tags}", tagsHtml)
             .replace("{blurb}", item["blurb"]);
     }
     
-    var header = "<h1>" + matchingItems.length + " items matching " + searchQuery + "</h1>";
+    var header = "<h2>" + matchingItems.length + " items matching " + searchQuery + "</h2>";
     setContent(header + finalHtml);
 }
 

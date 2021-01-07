@@ -31,6 +31,12 @@ class Themer:
         # load search form HTML
         with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_FORM_TEMPLATE_FILE), 'r') as file_pointer:
             self._search_form_html = file_pointer.read()
+        
+        # snippet HTML
+        with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
+            self._snippets_template = file_pointer.read()
+        
+
 
     def generate_output(self, content_data, config):
         blurbs = self._get_snippets_html(content_data)
@@ -89,7 +95,11 @@ class Themer:
         json_data:str = str(content_data).replace("'", '"')
         data_script = "<script type='text/javascript'>window.data='{}';</script>".format(json_data)
 
-        search_html = self._apply_layout_html(search_template_content + data_script, "Search", False)
+        # Also a shame: blurb is user-controlled but search JS is not ... so embed the snippet HTML.
+        snippet_html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
+        snippet_script = "<script type='text/javascript'>window.snippet='{}';</script>".format(snippet_html)
+
+        search_html = self._apply_layout_html(search_template_content + data_script + snippet_script, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         # Copy user-made pages
@@ -144,12 +154,7 @@ class Themer:
     # item is a dictionary of item attributes
     # NB: keep in synch with search.html (JS rendering)
     def _get_snippet_html(self, item):
-        snippets_template = ""
-
-        with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
-            snippets_template = file_pointer.read()
-        
-        item_html = snippets_template
+        item_html = self._snippets_template
         item_html = item_html.replace("{title}", "<a href='{}'>{}</a>".format(item["url"], item["title"]))
         item_html = item_html.replace("{url}", "<a href='{}'>{}</a>".format(item["url"], item["url"]))
 
