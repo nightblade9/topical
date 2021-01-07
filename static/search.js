@@ -32,15 +32,17 @@ onSearch = (searchQuery) => {
     var searchWords = searchQuery.split(' ');
     var allData = JSON.parse(window.data);
 
-    // Too hard/complicated to write as a single lambda/filter
+    // Too hard/complicated to write as lambdas/filters
     var matchingItems = [];
+
+    // Search for matching tags
     for (var i = 0; i < allData.length; i++)
     {
         var item = allData[i];
         var tags = item["tags"];
         var isMatch = false;
         
-        // Do we have a matching tag?
+        // Do any words match a tag?
         for (var k = 0; k < searchWords.length; k++)
         {
             var searchWord = searchWords[k];
@@ -100,6 +102,7 @@ onSearch = (searchQuery) => {
     for (var i = 0; i < matchingItems.length; i++)
     {
         var item = matchingItems[i];
+        var tags = item["tags"];
 
         var tagsHtml = "";
         for (var j = 0; j < tags.length; j++)
