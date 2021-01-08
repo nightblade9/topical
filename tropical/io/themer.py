@@ -28,8 +28,12 @@ class Themer:
 
         self._project_directory = project_directory
         self._theme_directory = theme_directory
+
         # TODO: refactor (move), doesn't belong here
-        self._snippet_generator = SnippetHtmlGenerator(self._project_directory)
+        # snippet HTML
+        with open("{}/{}/{}".format(project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
+            snippets_template = file_pointer.read()
+            self._snippet_generator = SnippetHtmlGenerator(snippets_template)
 
         # load layout HTML
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME), 'r') as file_pointer:

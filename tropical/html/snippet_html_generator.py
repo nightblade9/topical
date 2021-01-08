@@ -1,10 +1,8 @@
 from tropical.constants import THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME, TAGS_DIRECTORY
 
 class SnippetHtmlGenerator:
-    def __init__(self, project_directory):
-        # snippet HTML
-        with open("{}/{}/{}".format(project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
-            self._snippets_template = file_pointer.read()
+    def __init__(self, snippets_template):
+        self._snippets_template = snippets_template
 
     def get_snippets_html(self, content_json):
         """Get the HTML snippets for all content items."""
@@ -38,7 +36,7 @@ class SnippetHtmlGenerator:
         html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
         snippet_script = "<script type='text/javascript'>window.snippet='{}';</script>".format(html)
         return snippet_script
-        
+
 def get_snippets_tagged_with(content_data, target_tag):
     """Find all snippets with a given tag (case-insensitive)"""
     related_items = []
