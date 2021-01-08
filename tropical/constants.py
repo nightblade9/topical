@@ -10,7 +10,7 @@ SNIPPET_FILE_NAME = "snippet.html"
 INTRO_FILE_NAME = "intro.html"
 
 # Output constants
-OUTPUT_DIRECTORY = "output"
+OUTPUT_DIRECTORY = "docs" # play nice with GitHub Pages
 INDEX_FILENAME = "index.html"
 TAGS_DIRECTORY = "tags"
 
