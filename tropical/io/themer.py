@@ -3,7 +3,8 @@ import glob, json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
 from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 
-from tropical.content.tag_counter import get_unique_tags
+import tropical.content.tag_counter as tag_counter
+import tropical.html.tag_html_generator as tag_html_generator
 
 class Themer:
     def __init__(self, project_directory):
@@ -43,11 +44,9 @@ class Themer:
         blurbs = self._get_snippets_html(content_data)
 
         all_files = {} # filename => content
-        unique_tags:list = get_unique_tags(content_data)
+        unique_tags:list = tag_counter.get_unique_tags(content_data)
 
-        # Tag pages
-        num_tags = {} # tag => number
-            
+        # Tag pages            
         for tag in unique_tags:
             tagged_items = _get_snippets_tagged_with(content_data, tag)
 
@@ -59,18 +58,10 @@ class Themer:
             tag_page = self.apply_layout_html(tag_content, tag)
 
             all_files["{}/{}.html".format(TAGS_DIRECTORY, tag)] = tag_page
-            num_tags[tag] = len(tagged_items)
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
-        sorted_list = sorted(num_tags.items(), key = lambda x: x[1])
-        sorted_list.reverse()
-        num_tags_in_order = dict(sorted_list)
-
-        tag_index_html = "<h1>Items by Tag</h1>\n<ul>\n"
-        for tag in num_tags_in_order:
-            tag_index_html += "<li><a href='/{}/{}.html'>{}</a> ({} items)</li>".format(TAGS_DIRECTORY, tag, tag, num_tags_in_order[tag])
-
-        tag_index_html += "</ul>\n"
+        tag_distribution = tag_counter.get_tag_item_count(content_data)
+        tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution)
         tag_index_html = self.apply_layout_html(tag_index_html, "All Tags")
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
 
