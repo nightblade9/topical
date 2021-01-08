@@ -38,3 +38,28 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
             for tag in snippet["tags"]:
                 self.assertIn("<a href='/tags/{}.html'>{}</a>".format(tag, tag), actual[i])
             
+    def test_get_snippet_html_renders_html_correctly(self):
+            snippet = { "title": "GDL", "url": "https://nightblade9.github.io/game-design-library", "tags": ["game-design", "static website"], "blurb": "Game design library!" }
+            template = "GDL template: T={title} U={url} Ts={tags} B={blurb}"
+            
+            generator = SnippetHtmlGenerator(template)
+            actual = generator.get_snippet_html(snippet)
+
+            # Coarse checks, don't want over-flakiness if the template changes
+            self.assertIn("<a href='{}'>{}</a>".format(snippet["url"], snippet["title"]), actual)
+            self.assertIn("<a href='{}'>{}</a>".format(snippet["url"], snippet["url"]), actual)
+            self.assertIn(snippet["blurb"], actual)
+            for tag in snippet["tags"]:
+                self.assertIn("<a href='/tags/{}.html'>{}</a>".format(tag, tag), actual)
+ 
+    def test_get_snippet_template_for_javascript_replaces_quotes_and_wraps_in_script_tag(self):
+        # Very coarse test, don't want it to flake out if we change stuff like compressing results
+        template = "Title: '{title}'; URL: '{url}'; Tags: '{tags}'; Blurb: '{blurb}'"
+        generator = SnippetHtmlGenerator(template)
+        actual = generator.get_snippet_template_for_javascript()
+
+        self.assertIn('Title: "{title}"; URL: "{url}"; Tags: "{tags}"; Blurb: "{blurb}"', actual) # check quotes
+        # check wrapping
+        self.assertTrue(actual.startswith("<script type='text/javascript'"))
+        self.assertTrue(actual.endswith("</script>"))
+        self.assertGreater(actual.index("window.snippet="), -1)
