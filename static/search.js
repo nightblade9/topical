@@ -97,6 +97,9 @@ onSearch = (searchQuery) => {
             }
         }
     }
+
+    // TODO: more sophisticated relevance matching. For now, assume newer articles are better.
+    matchingItems.reverse();
     
     var finalHtml = "";
     for (var i = 0; i < matchingItems.length; i++)

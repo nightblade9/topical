@@ -47,6 +47,7 @@ class Themer:
 
     def generate_output(self, content_data):
         blurbs = self._snippet_generator.get_snippets_html(content_data)
+        blurbs.reverse() # favour newer articles over older ones
 
         all_files = {} # filename => content
         unique_tags:list = tag_counter.get_unique_tags(content_data)
