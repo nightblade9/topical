@@ -3,8 +3,8 @@ import glob, json, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
 from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 
-import tropical.content.tag_counter as tag_counter
-import tropical.html.tag_html_generator as tag_html_generator
+from tropical.content import tag_counter
+from tropical.html import tag_html_generator
 
 class Themer:
     def __init__(self, project_directory):

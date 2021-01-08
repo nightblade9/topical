@@ -1,7 +1,7 @@
 import unittest
 import re
 
-from tropical.html import tag_html_generator as tag_html_generator
+from tropical.html import tag_html_generator
 
 class TestTagHtmlGenerator(unittest.TestCase):
 

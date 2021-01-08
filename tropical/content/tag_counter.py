@@ -20,14 +20,25 @@ def get_tag_item_count(content_data):
     Note that the result is a sorted dictionary (dictionary created from a sorted list).
     """
     tag_item_count = {} # tag => count
+    normalized_to_name = {} # e.g. jrpg => JRPG
+
     for item in content_data:
         for tag in item["tags"]:
             normalized_tag = tag.lower()
+
             if not normalized_tag in tag_item_count:
                 tag_item_count[normalized_tag] = 0
             tag_item_count[normalized_tag] += 1
+
+            if not normalized_tag in normalized_to_name:
+                normalized_to_name[normalized_tag] = tag
     
-    sorted_list = sorted(tag_item_count.items(), key = lambda x: x[1])
+    original_name_to_count = {}
+    for normalized_name in normalized_to_name:
+        original_name = normalized_to_name[normalized_name]
+        original_name_to_count[original_name] = tag_item_count[normalized_name]
+    
+    sorted_list = sorted(original_name_to_count.items(), key = lambda x: x[1])
     sorted_list.reverse()
     tag_item_count_in_order = dict(sorted_list)
     
