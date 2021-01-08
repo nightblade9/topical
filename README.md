@@ -1,5 +1,7 @@
 # Tropical
 
+[![Build Status](https://travis-ci.com/nightblade9/tropical.svg?branch=main)](https://travis-ci.com/nightblade9/tropical)
+
 Static website generator for link collections with metadata. Features:
 
 - Quickly generates a static site with metadata (tags, blurb, etc.) for creating topical sites on a topic
