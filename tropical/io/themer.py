@@ -1,10 +1,12 @@
 #!/usr/bin/python
-import glob, json, os, sys
+import glob, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
 from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 
 from tropical.content import tag_counter
 from tropical.html import tag_html_generator
+from tropical.html import snippet_html_generator
+from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 
 class Themer:
     def __init__(self, project_directory):
@@ -26,33 +28,32 @@ class Themer:
 
         self._project_directory = project_directory
         self._theme_directory = theme_directory
+        # TODO: refactor (move), doesn't belong here
+        self._snippet_generator = SnippetHtmlGenerator(self._project_directory)
 
         # load layout HTML
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME), 'r') as file_pointer:
             self._layout_html = file_pointer.read()
 
+        # TODO: refactor (extract)
         # load search form HTML
         with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_FORM_TEMPLATE_FILE), 'r') as file_pointer:
             self._search_form_html = file_pointer.read()
         
-        # snippet HTML
-        with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
-            self._snippets_template = file_pointer.read()
-
 
     def generate_output(self, content_data):
-        blurbs = self._get_snippets_html(content_data)
+        blurbs = self._snippet_generator.get_snippets_html(content_data)
 
         all_files = {} # filename => content
         unique_tags:list = tag_counter.get_unique_tags(content_data)
 
         # Tag pages            
         for tag in unique_tags:
-            tagged_items = _get_snippets_tagged_with(content_data, tag)
+            tagged_items = snippet_html_generator.get_snippets_tagged_with(content_data, tag)
 
             tagged_snippets_html = ""
             for item in tagged_items:
-                tagged_snippets_html += self._get_snippet_html(item)
+                tagged_snippets_html += self._snippet_generator.get_snippet_html(item)
 
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
             tag_page = self.apply_layout_html(tag_content, tag)
@@ -77,10 +78,8 @@ class Themer:
         data_script = "<script type='text/javascript'>window.data='{}';</script>".format(json_data)
 
         # Also a shame: blurb is user-controlled but search JS is not ... so embed the snippet HTML.
-        snippet_html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
-        snippet_script = "<script type='text/javascript'>window.snippet='{}';</script>".format(snippet_html)
-
-        search_html = self.apply_layout_html(search_template_content + data_script + snippet_script, "Search", False)
+        snippet_html = self._snippet_generator.get_snippet_template_for_javascript()
+        search_html = self.apply_layout_html(search_template_content + data_script + snippet_html, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         # Copy user-made pages
@@ -126,43 +125,6 @@ class Themer:
         final_html = final_html.replace("{search}", search_html)
 
         return final_html
-
-    def _get_snippets_html(self, content_json):
-        html_snippets = []
-
-        for item in content_json:
-            item_html = self._get_snippet_html(item)
-            html_snippets.append(item_html)
-            
-        return html_snippets
-
-    # item is a dictionary of item attributes
-    # NB: keep in synch with search.html (JS rendering)
-    def _get_snippet_html(self, item):
-        item_html = self._snippets_template
-        item_html = item_html.replace("{title}", "<a href='{}'>{}</a>".format(item["url"], item["title"]))
-        item_html = item_html.replace("{url}", "<a href='{}'>{}</a>".format(item["url"], item["url"]))
-
-        tags_html = ""
-        for tag in item["tags"]:
-            tags_html += "<span class='tag'><a href='/{}/{}.html'>{}</a></span>".format(TAGS_DIRECTORY, tag, tag)
-
-        item_html = item_html.replace("{tags}", tags_html)
-
-        item_html = item_html.replace("{blurb}", item["blurb"])
-        return item_html
-
-def _get_snippets_tagged_with(content_data, target_tag):
-    related_items = []
-
-    for item in content_data:
-        for tag in item["tags"]:
-            normalized_tag = tag.lower()
-            if normalized_tag == target_tag.lower():
-                related_items.append(item)
-                break
-    
-    return related_items
 
 def _check_theme_files(theme_directory):
     if not os.path.isfile("{}/{}".format(theme_directory, LAYOUT_FILE_NAME)):
