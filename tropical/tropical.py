@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
-import glob, json, os, shutil, sys, time
-from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, CONFIG_FILE_NAME
+import glob, os, shutil, sys, time
+from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
 from tropical.io.project_validator import ProjectValidator
 from tropical.io.themer import Themer
+from tropical.io import config_fetcher
 
 # all imports related to generate_output
 from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
@@ -14,9 +15,6 @@ from tropical.html import tag_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 
 class Tropical:
-    def __init__(self):
-        pass
-
     def run(self, args):
         if len(args) != 2:
             print("Usage: python main.py <tropical project directory>")
@@ -28,17 +26,12 @@ class Tropical:
 
         content_data = ProjectValidator(project_directory).get_data()
         
-        config_json_path = "{}/{}".format(project_directory, CONFIG_FILE_NAME)
-        config_json = {}
-        if os.path.isfile(config_json_path):
-            with open(config_json_path) as file_handle:
-                raw_json = file_handle.read()
-                config_json = json.loads(raw_json)
-        
         # snippet HTML
         with open("{}/{}/{}".format(project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
             snippets_template = file_pointer.read()
             self._snippet_generator = SnippetHtmlGenerator(snippets_template)
+        
+        config_json = config_fetcher.get_config(project_directory)
 
         output = self._generate_output(project_directory, content_data, config_json)
         all_files = output["data"]
