@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import os, sys
+
+from tropical.html import search_html_generator
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME
-from tropical.constants import STATIC_CONTENT_DIRECTORY
-from tropical.constants import SEARCH_FORM_TEMPLATE_FILE
 
 class Themer:
     def __init__(self, project_directory):
@@ -25,15 +25,10 @@ class Themer:
         self._project_directory = project_directory
         self._theme_directory = theme_directory
 
-        # load layout HTML
+        # load/cache layout HTML
         with open("{}/{}/{}".format(self._project_directory, THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME), 'r') as file_pointer:
             self._layout_html = file_pointer.read()
 
-        # TODO: refactor (extract)
-        # load search form HTML
-        with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_FORM_TEMPLATE_FILE), 'r') as file_pointer:
-            self._search_form_html = file_pointer.read()
-            
     def apply_layout_html(self, content_html, title, config_json, add_search_form = True):
         """
         Applies the theme layout to the target HTML.
@@ -50,10 +45,9 @@ class Themer:
             .replace("{pageTitle}", title) \
             .replace("{siteRootUrl}", root_url)
 
-        search_html = self._search_form_html
-        if not add_search_form:
-            search_html = "" # remove from layout
-
+        search_html = ""
+        if add_search_form:
+            search_html = search_html_generator.get_search_html()
         final_html = final_html.replace("{search}", search_html)
 
         return final_html
