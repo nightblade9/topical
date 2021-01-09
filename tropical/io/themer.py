@@ -5,9 +5,9 @@ from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE
 from tropical.constants import SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 from tropical.constants import SCRIPT_WRAPPER_HTML
 
+from tropical.content import snippet_finder
 from tropical.content import tag_finder
 from tropical.html import tag_html_generator
-from tropical.html import snippet_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 
 class Themer:
@@ -56,7 +56,7 @@ class Themer:
 
         # Tag pages            
         for tag in unique_tags:
-            tagged_items = snippet_html_generator.get_snippets_tagged_with(content_data, tag)
+            tagged_items = snippet_finder.get_snippets_tagged_with(content_data, tag)
 
             tagged_snippets_html = ""
             for item in tagged_items:

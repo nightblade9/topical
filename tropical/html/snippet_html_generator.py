@@ -41,17 +41,3 @@ class SnippetHtmlGenerator:
         html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
         snippet_script = SCRIPT_WRAPPER_HTML.format("snippet", html)
         return snippet_script
-
-def get_snippets_tagged_with(content_data, target_tag):
-    """Find all snippets with a given tag (case-insensitive)"""
-    related_items = []
-
-    for item in content_data:
-        for tag in item["tags"]:
-            normalized_tag = tag.lower()
-            if normalized_tag == target_tag.lower():
-                related_items.append(item)
-                break
-    
-    return related_items
-
