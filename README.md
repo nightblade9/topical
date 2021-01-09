@@ -40,7 +40,9 @@ You can customize the theme by hand as you wish, or replace it outright.
 
 # Additional Configuration
 
-You can include a `config.json` file in your project directory. Currently, there are no supported fields.
+You can include a `config.json` file in your project directory with the following fields:
+
+- `siteRootUrl`: the root URL of your site. All links point to this. For debugging locally, set this to empty string. If the config file is missing or the value is empty, links assume the root directory, e.g. the tags page links `/tags/index.html`.
 
 # Additional Pages
 

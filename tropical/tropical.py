@@ -16,12 +16,18 @@ class Tropical:
 
         project_directory = args[1]
 
-        content_data = ProjectValidator(project_directory).get_data()
-        themer = Themer(project_directory) # validate theme directory
-
         start_time = time.time()
 
-        output = themer.generate_output(content_data)
+        content_data = ProjectValidator(project_directory).get_data()
+        themer = Themer(project_directory) # validate theme directory
+        
+        config_file_path = "{}/{}".format(project_directory, CONFIG_FILE_NAME)
+        config_file = {}
+        if os.path.isfile(config_file_path):
+            with open(config_file_path) as file_handle:
+                config_file = json.loads(file_handle.read())
+
+        output = themer.generate_output(content_data, config_file)
         all_files = output["data"]
         stats = output["stats"]
         output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)

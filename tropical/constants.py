@@ -23,3 +23,6 @@ SEARCH_FORM_TEMPLATE_FILE = "searchForm.html"
 # Config
 CONFIG_FILE_NAME = "config.json"
 PAGES_DIRECTORY = "pages"
+
+# HTML we inject to JS from Python
+SCRIPT_WRAPPER_HTML = "<script type='text/javascript'>window.{}='{}';</script>"

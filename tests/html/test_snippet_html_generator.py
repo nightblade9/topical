@@ -18,8 +18,9 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
         self.assertIn(first_snippet, actual)
         self.assertIn(second_snippet, actual)
     
-    def test_get_snippets_html_gets_all_snippets_html(self):
+    def test_get_snippets_html_gets_all_snippets_html_including_root_url(self):
         template = "Title: {title}; URL: {url}; Tags: {tags}; Blurb: {blurb}"
+        config_file = {"siteRootUrl": "nightblade.comz"}
         snippets = [
             { "title": "GitHub", "url": "https://github.com", "tags": ["unnecessary", "coding"], "blurb": "GitHub blurb" },
             { "title": "Discord", "url": "https://discord.com", "tags": ["unnecessary", "communication"], "blurb": "Disc Blurb" },
@@ -27,7 +28,7 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
         ]
 
         generator = SnippetHtmlGenerator(template)
-        actual = generator.get_snippets_html(snippets)
+        actual = generator.get_snippets_html(snippets, config_file)
 
         self.assertEqual(3, len(actual))
         for i in range(len(snippets)):
@@ -36,13 +37,13 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
             self.assertIn("<a href='{}'>{}</a>".format(snippet["url"], snippet["url"]), actual[i])
             self.assertIn(snippet["blurb"], actual[i])
             for tag in snippet["tags"]:
-                self.assertIn("<a href='/tags/{}.html'>{}</a>".format(tag, tag), actual[i])
+                self.assertIn("<a href='nightblade.comz/tags/{}.html'>{}</a>".format(tag, tag), actual[i])
             
-    def test_get_snippet_html_renders_html_correctly(self):
+    def test_get_snippet_html_renders_html_correctly_and_no_root_url(self):
             snippet = { "title": "GDL", "url": "https://nightblade9.github.io/game-design-library", "tags": ["game-design", "static website"], "blurb": "Game design library!" }
             template = "GDL template: T={title} U={url} Ts={tags} B={blurb}"
-            
             generator = SnippetHtmlGenerator(template)
+
             actual = generator.get_snippet_html(snippet)
 
             # Coarse checks, don't want over-flakiness if the template changes

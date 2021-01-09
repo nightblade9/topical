@@ -1,7 +1,9 @@
 #!/usr/bin/python
 import glob, os, sys
 from tropical.constants import THEME_DIRECTORY_NAME, LAYOUT_FILE_NAME, SNIPPET_FILE_NAME, INDEX_FILENAME, TAGS_DIRECTORY
-from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
+from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE
+from tropical.constants import SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
+from tropical.constants import SCRIPT_WRAPPER_HTML
 
 from tropical.content import tag_counter
 from tropical.html import tag_html_generator
@@ -45,8 +47,8 @@ class Themer:
             self._search_form_html = file_pointer.read()
         
 
-    def generate_output(self, content_data):
-        blurbs = self._snippet_generator.get_snippets_html(content_data)
+    def generate_output(self, content_data, config_file):
+        blurbs = self._snippet_generator.get_snippets_html(content_data, config_file)
         blurbs.reverse() # favour newer articles over older ones
 
         all_files = {} # filename => content
@@ -58,7 +60,7 @@ class Themer:
 
             tagged_snippets_html = ""
             for item in tagged_items:
-                tagged_snippets_html += self._snippet_generator.get_snippet_html(item)
+                tagged_snippets_html += self._snippet_generator.get_snippet_html(item, config_file)
 
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
             tag_page = self.apply_layout_html(tag_content, tag)
@@ -67,7 +69,7 @@ class Themer:
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
         tag_distribution = tag_counter.get_tag_item_count(content_data)
-        tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution)
+        tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution, config_file)
         tag_index_html = self.apply_layout_html(tag_index_html, "All Tags")
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
 
@@ -80,11 +82,15 @@ class Themer:
         # content_data generates JSON with single-quoted properties, which breaks when we parse it in JS.
         # Sadly, this obliterates all apostrophes in the content. 'Tis a shame.
         json_data:str = str(content_data).replace("'", '"')
-        data_script = "<script type='text/javascript'>window.data='{}';</script>".format(json_data)
+        data_script = SCRIPT_WRAPPER_HTML.format("data", json_data)
 
         # Also a shame: blurb is user-controlled but search JS is not ... so embed the snippet HTML.
         snippet_html = self._snippet_generator.get_snippet_template_for_javascript()
-        search_html = self.apply_layout_html(search_template_content + data_script + snippet_html, "Search", False)
+
+        # But wait, there's more! Inject the config file in case we need it (e.g. siteRootUrl)
+        config_script = SCRIPT_WRAPPER_HTML.format("config", str(config_file).replace("'", '"'))
+
+        search_html = self.apply_layout_html(search_template_content + data_script + snippet_html + config_script, "Search", False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         # Copy user-made pages
