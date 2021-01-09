@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import glob, os, shutil, sys, time
+import glob, os, sys, time
 from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
 from tropical.io.project_manager import ProjectManager
 from tropical.io import project_manager
@@ -47,15 +47,9 @@ class Tropical:
                 file_pointer.close()
 
         # copy static JS required for tropical functions (search)
-        for filename in glob.glob("static/*.js"):
-            shutil.copy(filename, output_directory)
+        project_manager.copy_required_static_files(output_directory)
+        project_manager.copy_theme_files(project_directory, output_directory)
         
-        # copy any directories (images, stylesheets, javascript, etc.) from theme to output
-        base_theme_directory = "{}/{}".format(project_directory, THEME_DIRECTORY_NAME)
-        for entry in os.scandir(base_theme_directory):
-            if os.path.isdir(entry):
-                shutil.copytree("{}/{}".format(base_theme_directory, entry.name), "{}/{}".format(output_directory, entry.name))
-
         stop_time = time.time()
         
         print("{}, totaling {} pages - generated in {}s".format(stats, len(all_files), (stop_time - start_time)))

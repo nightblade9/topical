@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import json, os, shutil, sys
-from tropical.constants import DATA_FILE_NAME, TAGS_DIRECTORY
+import glob, json, os, shutil, sys
+from tropical.constants import DATA_FILE_NAME, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
 
 class ProjectManager:
     
@@ -38,3 +38,15 @@ def recreate_output_directory(output_directory):
     os.mkdir(output_directory)
     os.mkdir("{}/{}".format(output_directory, TAGS_DIRECTORY))
 
+def copy_required_static_files(output_directory):
+    """Copy required files (e.g. static/*.js) that are required for Tropical to work (e.g. search)"""
+    for filename in glob.glob("static/*.js"):
+            shutil.copy(filename, output_directory)
+
+def copy_theme_files(project_directory, output_directory):
+    """Copy any theme files (CSS, JS, PNG, etc.) to the output directory"""
+    # copy any directories (images, stylesheets, javascript, etc.) from theme to output
+    base_theme_directory = "{}/{}".format(project_directory, THEME_DIRECTORY_NAME)
+    for entry in os.scandir(base_theme_directory):
+        if os.path.isdir(entry):
+            shutil.copytree("{}/{}".format(base_theme_directory, entry.name), "{}/{}".format(output_directory, entry.name))
