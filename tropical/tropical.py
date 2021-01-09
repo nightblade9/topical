@@ -2,7 +2,8 @@
 
 import glob, os, shutil, sys, time
 from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
-from tropical.io.project_validator import ProjectValidator
+from tropical.io.project_manager import ProjectManager
+from tropical.io import project_manager
 from tropical.io.themer import Themer
 from tropical.io import config_fetcher
 
@@ -21,10 +22,9 @@ class Tropical:
             sys.exit(1)
 
         project_directory = args[1]
-
         start_time = time.time()
-
-        content_data = ProjectValidator(project_directory).get_data()
+        manager = ProjectManager(project_directory)
+        content_data = manager.get_data()
         
         # snippet HTML
         with open("{}/{}/{}".format(project_directory, THEME_DIRECTORY_NAME, SNIPPET_FILE_NAME), 'r') as file_pointer:
@@ -33,17 +33,10 @@ class Tropical:
         
         config_json = config_fetcher.get_config(project_directory)
 
-        output = self._generate_output(project_directory, content_data, config_json)
-        all_files = output["data"]
-        stats = output["stats"]
+        all_files, stats = self._generate_output(project_directory, content_data, config_json)
 
         output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)
-
-        if os.path.isdir(output_directory):
-            shutil.rmtree(output_directory) # nuke it from orbit
-
-        os.mkdir(output_directory)
-        os.mkdir("{}/{}".format(output_directory, TAGS_DIRECTORY))
+        project_manager.recreate_output_directory(output_directory)
 
         for filename in all_files:
             contents = all_files[filename]
@@ -140,4 +133,4 @@ class Tropical:
         index_html = "{}{}".format(index_html, str.join("\n", blurbs))
         all_files[INDEX_FILENAME] = themer.apply_layout_html(index_html, "Home", config_json)
 
-        return {"data": all_files, "stats": stats}
+        return [all_files, stats]
