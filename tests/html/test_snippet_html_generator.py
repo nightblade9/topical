@@ -44,14 +44,14 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
             template = "GDL template: T={title} U={url} Ts={tags} B={blurb}"
             generator = SnippetHtmlGenerator(template)
 
-            actual = generator.get_snippet_html(snippet)
+            actual = generator.get_snippet_html(snippet, {"siteRootUrl": "https://root.site"})
 
             # Coarse checks, don't want over-flakiness if the template changes
             self.assertIn("<a href='{}'>{}</a>".format(snippet["url"], snippet["title"]), actual)
             self.assertIn("<a href='{}'>{}</a>".format(snippet["url"], snippet["url"]), actual)
             self.assertIn(snippet["blurb"], actual)
             for tag in snippet["tags"]:
-                self.assertIn("<a href='/tags/{}.html'>{}</a>".format(tag, tag), actual)
+                self.assertIn("<a href='https://root.site/tags/{}.html'>{}</a>".format(tag, tag), actual)
  
     def test_get_snippet_template_for_javascript_replaces_quotes_and_wraps_in_script_tag(self):
         # Very coarse test, don't want it to flake out if we change stuff like compressing results

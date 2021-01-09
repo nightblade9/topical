@@ -63,14 +63,14 @@ class Themer:
                 tagged_snippets_html += self._snippet_generator.get_snippet_html(item, config_file)
 
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
-            tag_page = self.apply_layout_html(tag_content, tag)
+            tag_page = self.apply_layout_html(tag_content, tag, config_file)
 
             all_files["{}/{}.html".format(TAGS_DIRECTORY, tag)] = tag_page
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
         tag_distribution = tag_counter.get_tag_item_count(content_data)
         tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution, config_file)
-        tag_index_html = self.apply_layout_html(tag_index_html, "All Tags")
+        tag_index_html = self.apply_layout_html(tag_index_html, "All Tags", config_file)
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
 
         # /search.html, partial page content is in static/search.html. Embedded JS.
@@ -90,7 +90,7 @@ class Themer:
         # But wait, there's more! Inject the config file in case we need it (e.g. siteRootUrl)
         config_script = SCRIPT_WRAPPER_HTML.format("config", str(config_file).replace("'", '"'))
 
-        search_html = self.apply_layout_html(search_template_content + data_script + snippet_html + config_script, "Search", False)
+        search_html = self.apply_layout_html(search_template_content + data_script + snippet_html + config_script, "Search", config_file, False)
         all_files[SEARCH_OUTPUT_FILE] = search_html
 
         # Copy user-made pages
@@ -102,7 +102,8 @@ class Themer:
             
             with open(filename, 'r') as file_handle:
                 contents = file_handle.read()
-            contents = self.apply_layout_html(contents, title)
+
+            contents = self.apply_layout_html(contents, title, config_file)
             all_files[just_filename] = contents
         # Static pages, about (TODO), and index last, since it has the summary of stats.
         stats = "{} items across {} tags".format(len(blurbs), len(unique_tags))
@@ -115,19 +116,25 @@ class Themer:
 
         index_html = index_html.replace("{stats}", stats)
         index_html = "{}{}".format(index_html, str.join("\n", blurbs))
-        all_files[INDEX_FILENAME] = self.apply_layout_html(index_html, "Home")
+        all_files[INDEX_FILENAME] = self.apply_layout_html(index_html, "Home", config_file)
 
         return { "data": all_files, "stats": stats }
     
-    def apply_layout_html(self, content_html, title, add_search_form = True):
+    def apply_layout_html(self, content_html, title, config_file, add_search_form = True):
         """
         Applies the theme layout to the target HTML.
         Swaps in the specified title.
         Adds a search form to the body, if add_search_form is True.
+        Also substitutes in {siteRootUrl} if specified.
         """
+
+        root_url = ""
+        if "siteRootUrl" in config_file:
+            root_url = config_file["siteRootUrl"]
+
         final_html = self._layout_html.replace("{content}", content_html) \
             .replace("{pageTitle}", title) \
-            .replace("{siteName}", "Game Design Library")
+            .replace("{siteRootUrl}", root_url)
 
         search_html = self._search_form_html
         if not add_search_form:

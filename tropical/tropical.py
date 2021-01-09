@@ -25,7 +25,9 @@ class Tropical:
         config_file = {}
         if os.path.isfile(config_file_path):
             with open(config_file_path) as file_handle:
-                config_file = json.loads(file_handle.read())
+                raw_json = file_handle.read()
+                config_file = json.loads(raw_json)
+                print("Raw={} config={}".format(raw_json, config_file))
 
         output = themer.generate_output(content_data, config_file)
         all_files = output["data"]

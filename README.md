@@ -58,12 +58,14 @@ TBD. For now, inspect the existing ones and code and reverse-engineer how they w
 
 Note that any external directories (images, CSS, JS, etc.) - but not files - will be copied from the theme directory to the output directory when you build the website. We highly recommend organizing all assets into directories within your theme.
 
+Also note that any HTML files in your project directory get copied over as-is, albeit with substitutions for tokens below (specifically, `siteRootUrl` gets substituted in if you specified it in `config.json`)
+
 ## layout.html
 
 - `{content}`: actual content (e.g. list of snippets)
-- `{siteName}`: site name (from config)
 - `{pageTitle}`: specific page title (e.g. "JRPG tag")
 - `{search}`: the search form
+- `{siteRootUrl}`: the root URL of the site, from the config file (`config.json`)
 
 # snippet.html
 
