@@ -6,7 +6,7 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
 
     def test_get_snippets_html_gets_all_snippets_html_including_root_url(self):
         template = "Title: {title}; URL: {url}; Tags: {tags}; Blurb: {blurb}"
-        config_file = {"siteRootUrl": "nightblade.comz"}
+        config_json = {"siteRootUrl": "nightblade.comz"}
         snippets = [
             { "title": "GitHub", "url": "https://github.com", "tags": ["unnecessary", "coding"], "blurb": "GitHub blurb" },
             { "title": "Discord", "url": "https://discord.com", "tags": ["unnecessary", "communication"], "blurb": "Disc Blurb" },
@@ -14,7 +14,7 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
         ]
 
         generator = SnippetHtmlGenerator(template)
-        actual = generator.get_snippets_html(snippets, config_file)
+        actual = generator.get_snippets_html(snippets, config_json)
 
         self.assertEqual(3, len(actual))
         for i in range(len(snippets)):

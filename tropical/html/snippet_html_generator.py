@@ -4,24 +4,24 @@ class SnippetHtmlGenerator:
     def __init__(self, snippets_template):
         self._snippets_template = snippets_template
 
-    def get_snippets_html(self, content_json, config_file):
+    def get_snippets_html(self, content_json, config_json):
         """Get the HTML snippets for all content items."""
         html_snippets = []
 
         for item in content_json:
-            item_html = self.get_snippet_html(item, config_file)
+            item_html = self.get_snippet_html(item, config_json)
             html_snippets.append(item_html)
             
         return html_snippets
 
     # item is a dictionary of item attributes e.g. { "title": ..., "url": ...}
     # NB: keep in synch with search.html (JS rendering)
-    def get_snippet_html(self, item, config_file):
+    def get_snippet_html(self, item, config_json):
         """Generate the actual HTML for a single snippet."""
         root_url = ""
 
-        if "siteRootUrl" in config_file:
-            root_url = config_file["siteRootUrl"]
+        if "siteRootUrl" in config_json:
+            root_url = config_json["siteRootUrl"]
 
         item_html = self._snippets_template
         item_html = item_html.replace("{title}", "<a href='{}'>{}</a>".format(item["url"], item["title"]))
