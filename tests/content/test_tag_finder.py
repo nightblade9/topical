@@ -1,6 +1,6 @@
 import unittest
 
-from tropical.content import tag_counter
+from tropical.content import tag_finder
 
 class TestTagCounter(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class TestTagCounter(unittest.TestCase):
             }
         ]
 
-        actual = tag_counter.get_unique_tags(data)
+        actual = tag_finder.get_unique_tags(data)
 
         self.assertEqual(4, len(actual))
         self.assertIn("JrPg", actual) # first case is the one returned
@@ -38,7 +38,7 @@ class TestTagCounter(unittest.TestCase):
             }
         ]
         
-        actual = tag_counter.get_tag_item_count(data)
+        actual = tag_finder.get_tag_item_count(data)
         self.assertEqual(3, len(actual))
         self.assertEqual(actual["JRPG"], 3) # first one is best boi
         self.assertEqual(actual["combat"], 2)

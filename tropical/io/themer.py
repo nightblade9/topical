@@ -5,7 +5,7 @@ from tropical.constants import STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE
 from tropical.constants import SEARCH_OUTPUT_FILE, SEARCH_FORM_TEMPLATE_FILE, PAGES_DIRECTORY, INTRO_FILE_NAME
 from tropical.constants import SCRIPT_WRAPPER_HTML
 
-from tropical.content import tag_counter
+from tropical.content import tag_finder
 from tropical.html import tag_html_generator
 from tropical.html import snippet_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
@@ -52,7 +52,7 @@ class Themer:
         blurbs.reverse() # favour newer articles over older ones
 
         all_files = {} # filename => content
-        unique_tags:list = tag_counter.get_unique_tags(content_data)
+        unique_tags:list = tag_finder.get_unique_tags(content_data)
 
         # Tag pages            
         for tag in unique_tags:
@@ -68,7 +68,7 @@ class Themer:
             all_files["{}/{}.html".format(TAGS_DIRECTORY, tag)] = tag_page
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
-        tag_distribution = tag_counter.get_tag_item_count(content_data)
+        tag_distribution = tag_finder.get_tag_item_count(content_data)
         tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution, config_file)
         tag_index_html = self.apply_layout_html(tag_index_html, "All Tags", config_file)
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
