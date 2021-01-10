@@ -29,7 +29,8 @@ class SnippetHtmlGenerator:
 
         tags_html = ""
         for tag in item["tags"]:
-            tags_html += "<span class='tag'><a href='{}/{}/{}.html'>{}</a></span>".format(root_url, TAGS_DIRECTORY, tag, tag)
+            # The space after tags is crucial, it allows line-breaking (tags go to the next line, not break half-way).
+            tags_html += "<span class='tag'><a href='{}/{}/{}.html'>{}</a></span> ".format(root_url, TAGS_DIRECTORY, tag, tag)
 
         item_html = item_html.replace("{tags}", tags_html)
 
