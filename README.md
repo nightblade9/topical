@@ -10,7 +10,15 @@ Static website generator for link collections with metadata. Features:
 
 # Usage
 
-Create a new directory for your tropical project. (Bonus points if you version-control it.) Within that directory, create a file called `data.json`. Each entry needs a `title`, `url`, and `tags`; `blurb` is optional. Example:
+Create a new directory for your tropical project. (Bonus points if you version-control it.) Within that directory, create a file called `data.json`. Each entry needs:
+
+- a `title`
+- a `url`
+- One or more `tags`
+
+Optionally, you can include:
+- a `blurb` describing the link
+- an `icon` - if specified, Tropical will add `/images/<icon>.png` after the item title 
 
 ```json
 [
@@ -23,7 +31,8 @@ Create a new directory for your tropical project. (Bonus points if you version-c
     {
         "title": "Wordpress",
         "url": "https://wordpress.org",
-        "tags": [ "cms", "php", "mysql" ]
+        "tags": [ "cms", "php", "mysql" ],
+        "icon": "video"
     }
 ]
 ```
