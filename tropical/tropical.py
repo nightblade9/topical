@@ -89,8 +89,14 @@ class Tropical:
 
         # Embed all data into a variable in our search page as window.data. Use original file: simply assigning
         # content_data generates JSON with single-quoted properties, which breaks when we parse it in JS.
-        # Sadly, this obliterates all apostrophes in the content. 'Tis a shame.
-        json_data:str = str(content_data).replace("'", '"')
+        # We need to preserve apostrophes IN content, so it doesn't obliterate HTML ...
+        for item in content_data:
+            item["title"] = item["title"].replace("'", "@@@")
+            if "blurb" in item:
+                item["blurb"] = item["blurb"].replace("'", "@@@")
+        # Convert attribute quoting e.g. 'title' to "title" but preserve apostrophes
+        json_data:str = str(content_data).replace("'", '\"').replace('@@@', "\\'")
+
         data_script = SCRIPT_WRAPPER_HTML.format("data", json_data)
 
         # Also a shame: blurb is user-controlled but search JS is not ... so embed the snippet HTML.
