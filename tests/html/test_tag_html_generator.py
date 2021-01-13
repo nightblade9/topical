@@ -18,4 +18,11 @@ class TestTagHtmlGenerator(unittest.TestCase):
 
         for tag in tag_counts:
             target_html = "<li><a href='github.com/tags/{}.html'>{}</a>".format(tag.lower(), tag.lower())
-            self.assertTrue(target_html in actual) 
+            self.assertTrue(target_html in actual)
+    
+    def test_get_html_for_tag_gets_correct_html(self):
+        tag = "monkeys"
+        expected = "<span class='tag'><a href='https://monkeys.com/tags/{}.html'>{}</a></span> ".format(tag.lower(), tag.lower())
+        actual = tag_html_generator.get_html_for_tag(tag, {"siteRootUrl": "https://monkeys.com"})
+        
+        self.assertEqual(actual, expected)

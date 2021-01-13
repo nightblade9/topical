@@ -124,7 +124,7 @@ class Tropical:
         # Static pages, about (TODO), and index last, since it has the summary of stats.
         stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
 
-        index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html)
+        index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html, tag_distribution, config_json)
         final_html = themer.apply_layout_html(index_html, "Home", config_json)
         all_files[INDEX_FILENAME] = final_html
 

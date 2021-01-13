@@ -1,3 +1,4 @@
+from tropical.html import tag_html_generator
 from tropical.constants import SCRIPT_WRAPPER_HTML, TAGS_DIRECTORY
 
 class SnippetHtmlGenerator:
@@ -35,7 +36,7 @@ class SnippetHtmlGenerator:
         tags_html = ""
         for tag in item["tags"]:
             # The space after tags is crucial, it allows line-breaking (tags go to the next line, not break half-way).
-            tags_html += "<span class='tag'><a href='{}/{}/{}.html'>{}</a></span> ".format(root_url, TAGS_DIRECTORY, tag, tag)
+            tags_html += tag_html_generator.get_html_for_tag(tag, config_json)
 
         item_html = item_html.replace("{tags}", tags_html)
 

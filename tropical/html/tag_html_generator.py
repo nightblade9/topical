@@ -13,3 +13,11 @@ def get_html_for_tag_counts(tag_item_count, config_json):
 
     tag_index_html += "</ul>\n"
     return tag_index_html
+
+def get_html_for_tag(tag, config_json):
+    root_url = ""
+    if "siteRootUrl" in config_json:
+        root_url = config_json["siteRootUrl"]
+        
+    # extra trailing space allows tags to break/wrap properly on small screens
+    return "<span class='tag'><a href='{}/{}/{}.html'>{}</a></span> ".format(root_url, TAGS_DIRECTORY, tag, tag)
