@@ -58,8 +58,8 @@ class Tropical:
     def _generate_output(self, project_directory, content_data, config_json):
         themer = Themer(project_directory) # validate theme directory
 
-        blurbs = self._snippet_generator.get_snippets_html(content_data, config_json)
-        blurbs.reverse() # favour newer articles over older ones
+        snippets_html:list = self._snippet_generator.get_snippets_html(content_data, config_json)
+        snippets_html.reverse() # favour newer articles over older ones
 
         all_files = {} # filename => content
         unique_tags:list = tag_finder.get_unique_tags(content_data)
@@ -122,8 +122,10 @@ class Tropical:
             contents = themer.apply_layout_html(contents, title, config_json)
             all_files[just_filename] = contents
         # Static pages, about (TODO), and index last, since it has the summary of stats.
-        stats = "{} items across {} tags".format(len(blurbs), len(unique_tags))
+        stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
 
-        all_files[INDEX_FILENAME] = index_html_generator.generate_index_page_html(themer, project_directory, stats, blurbs, config_json)
+        index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html)
+        final_html = themer.apply_layout_html(index_html, "Home", config_json)
+        all_files[INDEX_FILENAME] = final_html
 
         return [all_files, stats]
