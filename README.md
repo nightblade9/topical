@@ -90,6 +90,7 @@ Also note that any HTML files in your project directory get copied over as-is, a
 If present, a small intro blurb will be shown on the home page, using the contents of this file. 
 
 - `{stats}`: Site stats (number of items catalogued and number of tags).
+- `{tags:n}`: Shows the most popular `n` tags, descending (most-popular first).
 
 ## CSS
 
