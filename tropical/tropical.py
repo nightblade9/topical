@@ -9,9 +9,10 @@ from tropical.io import config_fetcher
 
 # all imports related to generate_output
 from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
-from tropical.constants import INTRO_FILE_NAME, SCRIPT_WRAPPER_HTML, SNIPPET_FILE_NAME, STATIC_CONTENT_DIRECTORY
+from tropical.constants import SCRIPT_WRAPPER_HTML, SNIPPET_FILE_NAME, STATIC_CONTENT_DIRECTORY
 from tropical.content import snippet_finder
 from tropical.content import tag_finder
+from tropical.html import index_html_generator
 from tropical.html import tag_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 
@@ -122,15 +123,7 @@ class Tropical:
             all_files[just_filename] = contents
         # Static pages, about (TODO), and index last, since it has the summary of stats.
         stats = "{} items across {} tags".format(len(blurbs), len(unique_tags))
-        
-        index_html = ""
-        intro_file_path = "{}/{}/{}".format(project_directory, THEME_DIRECTORY_NAME, INTRO_FILE_NAME)
-        if os.path.isfile(intro_file_path):
-            with open(intro_file_path, 'r') as file_handle:
-                index_html = file_handle.read()
 
-        index_html = index_html.replace("{stats}", "<span class='stats'>{}</span>".format(stats))
-        index_html = "{}{}".format(index_html, str.join("\n", blurbs))
-        all_files[INDEX_FILENAME] = themer.apply_layout_html(index_html, "Home", config_json)
+        all_files[INDEX_FILENAME] = index_html_generator.generate_index_page_html(themer, project_directory, stats, blurbs, config_json)
 
         return [all_files, stats]
