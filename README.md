@@ -69,22 +69,28 @@ Note that any external directories (images, CSS, JS, etc.) - but not files - wil
 
 Also note that any HTML files in your project directory get copied over as-is, albeit with substitutions for tokens below (specifically, `siteRootUrl` gets substituted in if you specified it in `config.json`)
 
-## layout.html
+## Pages
+
+### layout.html
 
 - `{content}`: actual content (e.g. list of snippets)
 - `{pageTitle}`: specific page title (e.g. "JRPG tag")
 - `{search}`: the search form
 - `{siteRootUrl}`: the root URL of the site, from the config file (`config.json`)
 
-# snippet.html
+### snippet.html
 
 - `{title}`: Page title. Gets converted into a link to the URL.
 - `{url}`: Page URL. Converted to a link.
 - `{tags}`: each is individually wrapped in `span class="tag"`
 - `{blurb}`: blurb (if specified)
 
-## intro.html (optional)
+### intro.html (optional)
 
 If present, a small intro blurb will be shown on the home page, using the contents of this file. 
 
 - `{stats}`: Site stats (number of items catalogued and number of tags).
+
+## CSS
+
+Tropical emits a number of CSS classes to allow you to style things how you like. Check the sample theme for examples.

@@ -129,7 +129,7 @@ class Tropical:
             with open(intro_file_path, 'r') as file_handle:
                 index_html = file_handle.read()
 
-        index_html = index_html.replace("{stats}", stats)
+        index_html = index_html.replace("{stats}", "<span class='stats'>{}</span>".format(stats))
         index_html = "{}{}".format(index_html, str.join("\n", blurbs))
         all_files[INDEX_FILENAME] = themer.apply_layout_html(index_html, "Home", config_json)
 
