@@ -53,6 +53,8 @@ You can include a `config.json` file in your project directory with the followin
 
 - `siteRootUrl`: the root URL of your site. All links point to this. For debugging locally, set this to empty string. If the config file is missing or the value is empty, links assume the root directory, e.g. the tags page links `/tags/index.html`.
 
+You can also overwrite the `siteRootUrl` value from the command-line by specifying `--localhost` as an argument to `tropical`; this will ignore the value in `config.json` and instead specify `localhost:8000`.
+
 # Additional Pages
 
 You can add additional static HTML pages to your project; simply create a `pages` directory and add any `.html` files. Like other files, they will be combined with the theme and copied to the output directory.

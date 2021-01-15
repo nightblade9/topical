@@ -18,8 +18,8 @@ from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 
 class Tropical:
     def run(self, args):
-        if len(args) != 2:
-            print("Usage: python main.py <tropical project directory>")
+        if len(args) < 2:
+            print("Usage: python main.py <tropical project directory> [--localhost]")
             sys.exit(1)
 
         project_directory = args[1]
@@ -33,6 +33,9 @@ class Tropical:
             self._snippet_generator = SnippetHtmlGenerator(snippets_template)
         
         config_json = config_fetcher.get_config(project_directory)
+        if "--localhost" in args:
+            config_json["siteRootUrl"] = "http://localhost:8000"
+            print("Overwriting configured site root URL with localhost:8000")
 
         all_files, stats = self._generate_output(project_directory, content_data, config_json)
 
