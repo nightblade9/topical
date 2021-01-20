@@ -72,6 +72,7 @@ class Tropical:
             # match everywhere else we use tag normalization
             normalized_tag = tag.replace(' ', '-').replace("'", "")
             tagged_items = snippet_finder.get_snippets_tagged_with(content_data, normalized_tag)
+            tagged_items.reverse() # assume newer = more relevant
 
             tagged_snippets_html = ""
             for item in tagged_items:
