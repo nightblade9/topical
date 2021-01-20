@@ -45,6 +45,7 @@ class SnippetHtmlGenerator:
 
     # We embed this in a single-quoted script in JS, so replace all single-quotes with double-quotes. And minify, sort of.
     def get_snippet_template_for_javascript(self):
+        # Match where we do tag normalization
         html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
         snippet_script = SCRIPT_WRAPPER_HTML.format("snippet", html)
         return snippet_script

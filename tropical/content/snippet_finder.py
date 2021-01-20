@@ -4,7 +4,8 @@ def get_snippets_tagged_with(content_data, target_tag):
 
     for item in content_data:
         for tag in item["tags"]:
-            normalized_tag = tag.lower()
+            # tag normalization
+            normalized_tag = tag.lower().replace("'", "").replace(' ', '-')
             if normalized_tag == target_tag.lower():
                 related_items.append(item)
                 break

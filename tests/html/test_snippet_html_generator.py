@@ -37,7 +37,7 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
                 self.assertIn(expected_icon_html, actual_html)
 
     def test_get_snippet_html_renders_html_correctly_and_no_root_url(self):
-            snippet = { "title": "GDL", "url": "https://nightblade9.github.io/game-design-library", "tags": ["game-design", "static website"], "blurb": "Game design library!" }
+            snippet = { "title": "GDL", "url": "https://nightblade9.github.io/game-design-library", "tags": ["game-design", "STATIC website", "Demon's Face"], "blurb": "Game design library!" }
             template = "GDL template: T={title} U={url} Ts={tags} B={blurb}"
             generator = SnippetHtmlGenerator(template)
 
@@ -48,7 +48,8 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
             self.assertIn("<a href='{}'>{}</a>".format(snippet["url"], snippet["url"]), actual)
             self.assertIn(snippet["blurb"], actual)
             for tag in snippet["tags"]:
-                self.assertIn("<a href='https://root.site/tags/{}.html'>{}</a>".format(tag, tag), actual)
+                clean_tag = tag.replace(' ', "-").replace("'", "")
+                self.assertIn("<a href='https://root.site/tags/{}.html'>{}</a>".format(clean_tag, tag), actual)
  
     def test_get_snippet_template_for_javascript_replaces_quotes_and_wraps_in_script_tag(self):
         # Very coarse test, don't want it to flake out if we change stuff like compressing results

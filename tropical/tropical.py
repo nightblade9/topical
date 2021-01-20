@@ -69,7 +69,9 @@ class Tropical:
 
         # Tag pages            
         for tag in unique_tags:
-            tagged_items = snippet_finder.get_snippets_tagged_with(content_data, tag)
+            # match everywhere else we use tag normalization
+            normalized_tag = tag.replace(' ', '-').replace("'", "")
+            tagged_items = snippet_finder.get_snippets_tagged_with(content_data, normalized_tag)
 
             tagged_snippets_html = ""
             for item in tagged_items:
@@ -78,7 +80,7 @@ class Tropical:
             tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
             tag_page = themer.apply_layout_html(tag_content, tag, config_json)
 
-            all_files["{}/{}.html".format(TAGS_DIRECTORY, tag)] = tag_page
+            all_files["{}/{}.html".format(TAGS_DIRECTORY, normalized_tag)] = tag_page
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
         tag_distribution = tag_finder.get_tag_item_count(content_data)
@@ -96,6 +98,13 @@ class Tropical:
         # We need to preserve apostrophes IN content, so it doesn't obliterate HTML ...
         for item in content_data:
             item["title"] = item["title"].replace("'", "@@@")
+
+            clean_tags = []
+            for tag in item["tags"]:
+                # Rules have to match tag-generator and tag filename generation
+                clean_tags.append(tag.replace("'", "@@@").replace(' ', '-').replace("'", ''))
+            item["tags"] = clean_tags
+            
             if "blurb" in item:
                 item["blurb"] = item["blurb"].replace("'", "@@@")
         # Convert attribute quoting e.g. 'title' to "title" but preserve apostrophes
