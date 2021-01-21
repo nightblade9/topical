@@ -47,7 +47,7 @@ class Themer:
 
         search_html = ""
         if add_search_form:
-            search_html = search_html_generator.get_search_html()
+            search_html = search_html_generator.get_search_html(root_url)
         final_html = final_html.replace("{search}", search_html)
 
         return final_html
