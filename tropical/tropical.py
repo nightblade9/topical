@@ -2,19 +2,21 @@
 
 import glob, os, sys, time
 from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
+
+# all imports related to generate_output
+from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
+from tropical.constants import SNIPPET_FILE_NAME
+from tropical.content import tag_finder
+
+from tropical.html import index_html_generator, tag_page_html_generator
+from tropical.html import search_html_generator
+from tropical.html import tag_html_generator
+from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 from tropical.io.project_manager import ProjectManager
 from tropical.io import project_manager
 from tropical.io.themer import Themer
 from tropical.io import config_fetcher
 
-# all imports related to generate_output
-from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_TEMPLATE_FILE, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
-from tropical.constants import SCRIPT_WRAPPER_HTML, SNIPPET_FILE_NAME, STATIC_CONTENT_DIRECTORY
-from tropical.content import snippet_finder
-from tropical.content import tag_finder
-from tropical.html import index_html_generator
-from tropical.html import tag_html_generator
-from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 
 class Tropical:
     def run(self, args):
@@ -71,58 +73,29 @@ class Tropical:
         for tag in unique_tags:
             # match everywhere else we use tag normalization
             normalized_tag = tag.replace(' ', '-').replace("'", "")
-            tagged_items = snippet_finder.get_snippets_tagged_with(content_data, normalized_tag)
-            tagged_items.reverse() # assume newer = more relevant
-
-            tagged_snippets_html = ""
-            for item in tagged_items:
-                tagged_snippets_html += self._snippet_generator.get_snippet_html(item, config_json)
-
-            tag_content = "<h1>{} items tagged with {}</h1>\n{}".format(len(tagged_items), tag, tagged_snippets_html)
-            tag_page = themer.apply_layout_html(tag_content, tag, config_json)
-
-            all_files["{}/{}.html".format(TAGS_DIRECTORY, normalized_tag)] = tag_page
+            tag_page_html = tag_page_html_generator.generate_tag_page(tag, normalized_tag, self._snippet_generator, content_data, config_json, themer)
+            all_files["{}/{}.html".format(TAGS_DIRECTORY, normalized_tag)] = tag_page_html
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
         tag_distribution = tag_finder.get_tag_item_count(content_data)
         tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution, config_json)
         tag_index_html = themer.apply_layout_html(tag_index_html, "All Tags", config_json)
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
+        
+        all_files[SEARCH_OUTPUT_FILE] = search_html_generator.generate_search_page_html(content_data, config_json, self._snippet_generator, themer)
 
-        # /search.html, partial page content is in static/search.html. Embedded JS.
-        search_template_content:str = ""
-        with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE), 'r') as file_handle:
-            search_template_content = file_handle.read()
+        self._generate_user_made_pages(project_directory, config_json, themer, all_files)
 
-        # Embed all data into a variable in our search page as window.data. Use original file: simply assigning
-        # content_data generates JSON with single-quoted properties, which breaks when we parse it in JS.
-        # We need to preserve apostrophes IN content, so it doesn't obliterate HTML ...
-        for item in content_data:
-            item["title"] = item["title"].replace("'", "@@@")
+        # Static pages: index last, since it displays stats
+        stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
 
-            clean_tags = []
-            for tag in item["tags"]:
-                # Rules have to match tag-generator and tag filename generation
-                clean_tags.append(tag.replace("'", "@@@").replace(' ', '-').replace("'", ''))
-            item["tags"] = clean_tags
-            
-            if "blurb" in item:
-                item["blurb"] = item["blurb"].replace("'", "@@@")
-        # Convert attribute quoting e.g. 'title' to "title" but preserve apostrophes
-        json_data:str = str(content_data).replace("'", '\"').replace('@@@', "\\'")
+        index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html, tag_distribution, config_json)
+        final_html = themer.apply_layout_html(index_html, "Home", config_json)
+        all_files[INDEX_FILENAME] = final_html
 
-        data_script = SCRIPT_WRAPPER_HTML.format("data", json_data)
-
-        # Also a shame: blurb is user-controlled but search JS is not ... so embed the snippet HTML.
-        snippet_html = self._snippet_generator.get_snippet_template_for_javascript()
-
-        # But wait, there's more! Inject the config file in case we need it (e.g. siteRootUrl)
-        config_script = SCRIPT_WRAPPER_HTML.format("config", str(config_json).replace("'", '"'))
-
-        search_html = themer.apply_layout_html(search_template_content + data_script + snippet_html + config_script, "Search", config_json, False)
-        all_files[SEARCH_OUTPUT_FILE] = search_html
-
-        # Copy user-made pages
+        return [all_files, stats]
+    
+    def _generate_user_made_pages(self, project_directory, config_json, themer, all_files):
         for filename in glob.glob("{}/{}/*.html".format(project_directory, PAGES_DIRECTORY)):
             contents = ""
 
@@ -134,11 +107,3 @@ class Tropical:
 
             contents = themer.apply_layout_html(contents, title, config_json)
             all_files[just_filename] = contents
-        # Static pages, about (TODO), and index last, since it has the summary of stats.
-        stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
-
-        index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html, tag_distribution, config_json)
-        final_html = themer.apply_layout_html(index_html, "Home", config_json)
-        all_files[INDEX_FILENAME] = final_html
-
-        return [all_files, stats]
