@@ -77,6 +77,13 @@ class Tropical:
             normalized_tag = tag.replace(' ', '-').replace("'", "")
             tag_page_html = tag_page_html_generator.generate_tag_page(tag, normalized_tag, self._snippet_generator, content_data, config_json, tags_metadata, themer)
             all_files["{}/{}.html".format(TAGS_DIRECTORY, normalized_tag)] = tag_page_html
+
+            if normalized_tag in tags_metadata:
+                tags_metadata.pop(normalized_tag)
+        
+        if len(tags_metadata) > 0:
+            unused_tags = ", ".join(tags_metadata.keys())
+            print("Warning: there are {} tag(s) in {} that aren't used in any items: {}".format(len(tags_metadata), TAGS_METADATA_FILENAME, unused_tags))
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
         tag_distribution = tag_finder.get_tag_item_count(content_data)
