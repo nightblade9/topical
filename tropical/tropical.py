@@ -21,7 +21,7 @@ from tropical.io import config_fetcher
 class Tropical:
     def run(self, args):
         if len(args) < 2:
-            print("Usage: python main.py <tropical project directory> [--localhost]")
+            print("Usage: python main.py <tropical project directory> [--localhost] [--report-missing-tag-descriptions]")
             sys.exit(1)
 
         project_directory = args[1]
@@ -39,7 +39,8 @@ class Tropical:
             config_json["siteRootUrl"] = "http://localhost:8000"
             print("Overwriting configured site root URL with localhost:8000")
 
-        all_files, stats = self._generate_output(project_directory, content_data, config_json)
+        report_missing_tag_descriptions = "--report-missing-tag-descriptions" in args
+        all_files, stats = self._generate_output(project_directory, content_data, config_json, report_missing_tag_descriptions)
 
         output_directory = "{}/{}".format(project_directory, OUTPUT_DIRECTORY)
         project_manager.recreate_output_directory(output_directory)
@@ -60,7 +61,7 @@ class Tropical:
         
         print("{}, totaling {} pages - generated in {}s".format(stats, len(all_files), (stop_time - start_time)))
 
-    def _generate_output(self, project_directory, content_data, config_json):
+    def _generate_output(self, project_directory, content_data, config_json, report_missing_tag_descriptions):
         themer = Themer(project_directory) # validate theme directory
 
         snippets_html:list = self._snippet_generator.get_snippets_html(content_data, config_json)
@@ -70,7 +71,10 @@ class Tropical:
         unique_tags:list = tag_finder.get_unique_tags(content_data)
         tags_metadata = _get_normalized_tags_metadata(project_directory)
 
-        tags_without_descriptions = _find_tags_without_descriptions(unique_tags, tags_metadata)
+        tags_without_descriptions = []
+        if report_missing_tag_descriptions:
+            tags_without_descriptions = _find_tags_without_descriptions(unique_tags, tags_metadata)
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         # Tag pages            
         for tag in unique_tags:
