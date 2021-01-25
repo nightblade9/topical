@@ -6,11 +6,14 @@ def get_unique_tags(content_data):
     for tag in all_tags:
         is_duplicate = False
         for seen_before in unique_tags:
-            if seen_before.lower() == tag.lower():
+            # match everywhere else we use tag normalization
+            normalized_tag = tag.replace(' ', '-').replace("'", "").lower()
+            normalized_before = seen_before.replace(' ', '-').replace("'", "").lower()
+            if normalized_before == normalized_tag:
                 is_duplicate = True
                 break
         if not is_duplicate:
-            unique_tags.append(tag) # preserve case
+            unique_tags.append(tag) # preserve case, might be important to the user
     
     return unique_tags
 

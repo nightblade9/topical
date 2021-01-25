@@ -68,8 +68,9 @@ class Tropical:
 
         all_files = {} # filename => content
         unique_tags:list = tag_finder.get_unique_tags(content_data)
-
         tags_metadata = _get_normalized_tags_metadata(project_directory)
+
+        tags_without_descriptions = _find_tags_without_descriptions(unique_tags, tags_metadata)
 
         # Tag pages            
         for tag in unique_tags:
@@ -85,6 +86,9 @@ class Tropical:
             unused_tags = ", ".join(tags_metadata.keys())
             print("Warning: there are {} tag(s) in {} that aren't used in any items: {}".format(len(tags_metadata), TAGS_METADATA_FILENAME, unused_tags))
         
+        if len(tags_without_descriptions) > 0:
+            print("Warning: there are {} tag(s) without metadata descriptions: {}".format(len(tags_without_descriptions), tags_without_descriptions))
+
         # /tags/index.html, an index of tag with count, sorted descendingly by count
         tag_distribution = tag_finder.get_tag_item_count(content_data)
         tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution, config_json)
@@ -133,3 +137,14 @@ def _get_normalized_tags_metadata(project_directory):
         normalized_tags[normalized_tag] = tags_json[tag]
 
     return normalized_tags
+
+def _find_tags_without_descriptions(unique_tags, tags_metadata):
+    missing_descriptions = unique_tags[:]
+
+    for tag in tags_metadata:
+        # match everywhere else we use tag normalization
+        normalized_tag = tag.replace(' ', '-').replace("'", "").lower()
+        if normalized_tag in unique_tags:
+            missing_descriptions.remove(normalized_tag)
+    
+    return missing_descriptions
