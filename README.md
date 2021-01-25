@@ -49,11 +49,34 @@ You can customize the theme by hand as you wish, or replace it outright.
 
 # Additional Configuration
 
+## config.json
+
 You can include a `config.json` file in your project directory with the following fields:
 
 - `siteRootUrl`: the root URL of your site. All links point to this. For debugging locally, set this to empty string. If the config file is missing or the value is empty, links assume the root directory, e.g. the tags page links `/tags/index.html`.
 
+Sample:
+
+```json
+{
+    "siteRootUrl": "https://nightblade9.github.io/game-design-library"
+}
+
+
 You can also overwrite the `siteRootUrl` value from the command-line by specifying `--localhost` as an argument to `tropical`; this will ignore the value in `config.json` and instead specify `localhost:8000`.
+
+## tags.json
+
+You can include a `tags.json` file with a description of each tag. It will appear on the tag's page, under the title (e.g. "8 items tagged with JRPG").
+
+Sample:
+
+```json
+{
+    "JRPG": "Junior rocket-powered gorrila",
+    "idle": "What it's called when you do nothing"
+}
+```
 
 # Additional Pages
 

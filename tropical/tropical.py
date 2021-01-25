@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import glob, os, sys, time
-from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
+import glob, json, os, sys, time
+from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TAGS_METADATA_FILENAME
 
 # all imports related to generate_output
 from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
@@ -69,11 +69,13 @@ class Tropical:
         all_files = {} # filename => content
         unique_tags:list = tag_finder.get_unique_tags(content_data)
 
+        tags_metadata = _get_normalized_tags_metadata(project_directory)
+
         # Tag pages            
         for tag in unique_tags:
             # match everywhere else we use tag normalization
             normalized_tag = tag.replace(' ', '-').replace("'", "")
-            tag_page_html = tag_page_html_generator.generate_tag_page(tag, normalized_tag, self._snippet_generator, content_data, config_json, themer)
+            tag_page_html = tag_page_html_generator.generate_tag_page(tag, normalized_tag, self._snippet_generator, content_data, config_json, tags_metadata, themer)
             all_files["{}/{}.html".format(TAGS_DIRECTORY, normalized_tag)] = tag_page_html
         
         # /tags/index.html, an index of tag with count, sorted descendingly by count
@@ -107,3 +109,20 @@ class Tropical:
 
             contents = themer.apply_layout_html(contents, title, config_json)
             all_files[just_filename] = contents
+
+def _get_normalized_tags_metadata(project_directory):
+    # Tags metadata, typically from tags.json. Remove 'em as we go so we can warn about unused metadata.
+    tags_json = {}
+
+    tags_metadata_file = "{}/{}".format(project_directory, TAGS_METADATA_FILENAME)
+    if os.path.isfile(tags_metadata_file):
+        with open(tags_metadata_file) as file_pointer:
+            tags_json = json.loads(file_pointer.read())
+    
+    normalized_tags = {}
+    for tag in tags_json.keys():
+        # match everywhere else we use tag normalization
+        normalized_tag = tag.replace(' ', '-').replace("'", "")
+        normalized_tags[normalized_tag] = tags_json[tag]
+
+    return normalized_tags
