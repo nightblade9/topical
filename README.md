@@ -8,6 +8,12 @@ Static website generator for link collections with metadata. Features:
 - Can be hosted for free on GitHub via GitHub Pages
 - Includes client-side search
 
+# Sites Built with Tropical
+
+Open an issue/PR to get your Tropical-based site listed here.
+ 
+- [Game Design Library](https://nightblade9.github.io/game-design-library)
+
 # Usage
 
 Create a new directory for your tropical project. (Bonus points if you version-control it.) Within that directory, create a file called `data.json`. Each entry needs:
