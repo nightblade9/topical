@@ -86,6 +86,19 @@ Sample:
 
 To see which tags don't have a corresponding entry in `tags.json`, run `tropical` with the command-line argument `--report-missing-tag-descriptions`
 
+# How Search Works
+
+Since Tropical generates static sites, we can't track which links are more or less popular, or scan an article's contents for relevancy. Instead, we look at the title, tags, and blurb. 
+
+For every word the user searches for, if that word appears in any of the fields specified above, that increases the rank of that article for that search.
+
+Tropical uses a weighted average:
+- title matches are worth 2 points per search word
+- tag matches are worth 1 point per search word
+- blurb matches are worth 4 points per search word
+
+While blurbs are optional, if search is important to your site, we highly recommend writing terse, keyword-packed blurbs; it will dramatically improve the quality of search results.
+
 # Additional Pages
 
 You can add additional static HTML pages to your project; simply create a `pages` directory and add any `.html` files. Like other files, they will be combined with the theme and copied to the output directory.
