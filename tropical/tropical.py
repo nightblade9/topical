@@ -74,7 +74,6 @@ class Tropical:
         tags_without_descriptions = []
         if report_missing_tag_descriptions:
             tags_without_descriptions = _find_tags_without_descriptions(unique_tags, tags_metadata)
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         # Tag pages            
         for tag in unique_tags:
