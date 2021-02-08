@@ -29,3 +29,6 @@ SCRIPT_WRAPPER_HTML = "<script type='text/javascript'>window.{}='{}';</script>"
 
 # Tags tags tags tags tags
 TAGS_METADATA_FILENAME = "tags.json"
+
+# OpenGraph
+OPEN_GRAPH_TEMPLATE_FILE = "openGraph.html"

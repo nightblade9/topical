@@ -53,8 +53,18 @@ class Themer:
         return final_html
 
 def _check_theme_files(theme_directory):
-    if not os.path.isfile("{}/{}".format(theme_directory, LAYOUT_FILE_NAME)):
+    layout_file = "{}/{}".format(theme_directory, LAYOUT_FILE_NAME)
+
+    if not os.path.isfile(layout_file):
         print("Theme is missing layout file {}".format(LAYOUT_FILE_NAME))
+        return False
+    
+    layout_contents = ""
+    with open(layout_file, "r") as file_handle:
+        layout_contents = file_handle.read()
+    
+    if not "</head>" in layout_contents:
+        print("Layout file is missing the closing </head> tag (must be lowercase).")
         return False
     
     if not os.path.isfile("{}/{}".format(theme_directory, SNIPPET_FILE_NAME)):

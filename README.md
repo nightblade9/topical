@@ -61,13 +61,25 @@ You can include a `config.json` file in your project directory with the followin
 
 - `siteRootUrl`: the root URL of your site. All links point to this. For debugging locally, set this to empty string. If the config file is missing or the value is empty, links assume the root directory, e.g. the tags page links `/tags/index.html`.
 
+If you would like to add OpenGraph tags to each of your pages automatically, please add an `openGraph` property with the following values:
+
+- `title`: The title of the website (used in `<og:title>` tag)
+- `image`: The URL to the image used in the OpenGraph thumbnails, relative to `siteRootUrl`
+- `description`: The site description (used in `<og:description>` tag)
+
+Note that the title and description will be prefixed with page-specific values, such as `Items tagged with JRPG - {description}`.
+
 Sample:
 
 ```json
-{
-    "siteRootUrl": "https://nightblade9.github.io/game-design-library"
+    "siteRootUrl": "https://nightblade9.github.io/game-design-library",
+    "openGraph": {
+        "title": "Game Design Library",
+        "image": "images/openGraph.png",
+        "description": "A library of game-design articles that deal with topics like lives, balancing difficulty, perfecting your core loop, loot-boxes, and player experience"
+    }
 }
-
+```
 
 You can also overwrite the `siteRootUrl` value from the command-line by specifying `--localhost` as an argument to `tropical`; this will ignore the value in `config.json` and instead specify `localhost:8000`.
 

@@ -9,6 +9,7 @@ from tropical.constants import SNIPPET_FILE_NAME
 from tropical.content import tag_finder
 
 from tropical.html import index_html_generator, tag_page_html_generator
+from tropical.html.open_graph_generator import OpenGraphGenerator
 from tropical.html import search_html_generator
 from tropical.html import tag_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
@@ -62,7 +63,10 @@ class Tropical:
         print("{}, totaling {} pages - generated in {}s".format(stats, len(all_files), (stop_time - start_time)))
 
     def _generate_output(self, project_directory, content_data, config_json, report_missing_tag_descriptions):
-        themer = Themer(project_directory) # validate theme directory
+        themer = Themer(project_directory) # validate theme directory and HTML
+
+        # Painfully, has to be applied item by item, because of the prefix/description.
+        open_graph = OpenGraphGenerator(config_json)
 
         snippets_html:list = self._snippet_generator.get_snippets_html(content_data, config_json)
         snippets_html.reverse() # favour newer articles over older ones
@@ -80,6 +84,7 @@ class Tropical:
             # match everywhere else we use tag normalization
             normalized_tag = tag.replace(' ', '-').replace("'", "")
             tag_page_html = tag_page_html_generator.generate_tag_page(tag, normalized_tag, self._snippet_generator, content_data, config_json, tags_metadata, themer)
+            tag_page_html = open_graph.add_meta_tags(tag_page_html, "Items tagged with {}".format(tag))
             all_files["{}/{}.html".format(TAGS_DIRECTORY, normalized_tag)] = tag_page_html
 
             if normalized_tag in tags_metadata:
@@ -96,32 +101,38 @@ class Tropical:
         tag_distribution = tag_finder.get_tag_item_count(content_data)
         tag_index_html = tag_html_generator.get_html_for_tag_counts(tag_distribution, config_json)
         tag_index_html = themer.apply_layout_html(tag_index_html, "All Tags", config_json)
+        tag_index_html = open_graph.add_meta_tags(tag_index_html, "All Tags")
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
         
-        all_files[SEARCH_OUTPUT_FILE] = search_html_generator.generate_search_page_html(content_data, config_json, self._snippet_generator, themer)
+        search_html = search_html_generator.generate_search_page_html(content_data, config_json, self._snippet_generator, themer)
+        search_html = open_graph.add_meta_tags(search_html, "Search")
+        all_files[SEARCH_OUTPUT_FILE] = search_html
 
-        self._generate_user_made_pages(project_directory, config_json, themer, all_files)
+        self._generate_user_made_pages(project_directory, config_json, themer, open_graph, all_files)
 
         # Static pages: index last, since it displays stats
         stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
 
         index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html, tag_distribution, config_json)
-        final_html = themer.apply_layout_html(index_html, "Home", config_json)
+        final_html = themer.apply_layout_html(index_html, "", config_json)
+        final_html = open_graph.add_meta_tags(final_html, "")
         all_files[INDEX_FILENAME] = final_html
 
         return [all_files, stats]
     
-    def _generate_user_made_pages(self, project_directory, config_json, themer, all_files):
+    def _generate_user_made_pages(self, project_directory, config_json, themer, open_graph, all_files):
         for filename in glob.glob("{}/{}/*.html".format(project_directory, PAGES_DIRECTORY)):
             contents = ""
 
             just_filename = filename[filename.rindex(os.path.sep) + 1 :]
             title = just_filename[0 : just_filename.rindex('.')]
+            title = title[0].upper() + title[1:]
             
             with open(filename, 'r') as file_handle:
                 contents = file_handle.read()
 
             contents = themer.apply_layout_html(contents, title, config_json)
+            contents = open_graph.add_meta_tags(contents, title)
             all_files[just_filename] = contents
 
 def _get_normalized_tags_metadata(project_directory):
