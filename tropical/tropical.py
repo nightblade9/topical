@@ -114,7 +114,7 @@ class Tropical:
         stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
 
         index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html, tag_distribution, config_json)
-        final_html = themer.apply_layout_html(index_html, "", config_json)
+        final_html = themer.apply_layout_html(index_html, "Home", config_json)
         final_html = open_graph.add_meta_tags(final_html, "")
         all_files[INDEX_FILENAME] = final_html
 
