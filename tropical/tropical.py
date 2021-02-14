@@ -55,7 +55,7 @@ class Tropical:
                 file_pointer.close()
 
         # copy static JS required for tropical functions (search)
-        project_manager.copy_required_static_files(output_directory)
+        project_manager.copy_required_static_files(project_directory, output_directory)
         project_manager.copy_theme_files(project_directory, output_directory)
         
         stop_time = time.time()

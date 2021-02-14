@@ -1,5 +1,5 @@
 from tropical.html import tag_html_generator
-from tropical.constants import SCRIPT_WRAPPER_HTML, TAGS_DIRECTORY
+from tropical.constants import SCRIPT_WRAPPER_HTML
 
 class SnippetHtmlGenerator:
     def __init__(self, snippets_template):
@@ -47,5 +47,6 @@ class SnippetHtmlGenerator:
     def get_snippet_template_for_javascript(self):
         # Match where we do tag normalization
         html = self._snippets_template.replace("'", '"').replace("  ", "").replace("\n", "").replace("\r", "")
+        # window.snippet = html
         snippet_script = SCRIPT_WRAPPER_HTML.format("snippet", html)
         return snippet_script

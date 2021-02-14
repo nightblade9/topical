@@ -16,30 +16,13 @@ def generate_search_page_html(content_data, config_json,snippet_generator, theme
     with open("{}/{}".format(STATIC_CONTENT_DIRECTORY, SEARCH_TEMPLATE_FILE), 'r') as file_handle:
         search_template_content = file_handle.read()
 
-    # Embed all data into a variable in our search page as window.data. Use original file: simply assigning
-    # content_data generates JSON with single-quoted properties, which breaks when we parse it in JS.
-    # We need to preserve apostrophes IN content, so it doesn't obliterate HTML ...
-    for item in content_data:
-        item["title"] = item["title"].replace("'", "@@@")
-
-        clean_tags = []
-        for tag in item["tags"]:
-            # Rules have to match tag-generator and tag filename generation
-            clean_tags.append(tag.replace("'", "@@@").replace(' ', '-').replace("'", ''))
-        item["tags"] = clean_tags
-        
-        if "blurb" in item:
-            item["blurb"] = item["blurb"].replace("'", "@@@")
-    # Convert attribute quoting e.g. 'title' to "title" but preserve apostrophes
-    json_data:str = str(content_data).replace("'", '\"').replace('@@@', "\\'")
-
-    data_script = SCRIPT_WRAPPER_HTML.format("data", json_data)
-
-    # Also a shame: blurb is user-controlled but search JS is not ... so embed the snippet HTML.
+    # Embed snippet template into a variable in our search page as window.snippet.
+    # blurb template is user-controlled but search JS is not ... so embed the snippet HTML.
     snippet_html = snippet_generator.get_snippet_template_for_javascript()
 
     # But wait, there's more! Inject the config file in case we need it (e.g. siteRootUrl)
+    # window.config = config_json
     config_script = SCRIPT_WRAPPER_HTML.format("config", str(config_json).replace("'", '"'))
 
-    search_html = themer.apply_layout_html(search_template_content + data_script + snippet_html + config_script, "Search", config_json, False)
+    search_html = themer.apply_layout_html(search_template_content + snippet_html + config_script, "Search", config_json, False)
     return search_html
