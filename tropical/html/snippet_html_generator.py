@@ -27,8 +27,9 @@ class SnippetHtmlGenerator:
         item_html = self._snippets_template
         title_html = "<a href='{}'>{}</a>".format(item["url"], item["title"])
 
-        if "icon" in item:
-            title_html += "<img class='icon' src='{}/images/{}.png' />".format(root_url, item["icon"])
+        if "type" in item:
+            type = item["type"]
+            title_html += "<img class='icon' src='{}/images/{}.png' title={} />".format(root_url, type, type)
 
         item_html = item_html.replace("{title}", title_html)
         item_html = item_html.replace("{url}", "<a href='{}'>{}</a>".format(item["url"], item["url"]))

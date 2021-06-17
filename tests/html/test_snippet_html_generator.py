@@ -13,7 +13,7 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
             { "title": "GitHub", "url": "https://github.com", "tags": ["unnecessary", "coding"], "blurb": "GitHub blurb" },
             { "title": "Discord", "url": "https://discord.com", "tags": ["unnecessary", "communication"], "blurb": "Disc Blurb" },
             # eye icon
-            { "title": "Twitter", "url": "https://twitter.com", "tags": ["unnecessary", "marketing"], "blurb": "Tweetsalot", "icon": "eye" }
+            { "title": "Twitter", "url": "https://twitter.com", "tags": ["unnecessary", "marketing"], "blurb": "Tweetsalot", "type": "eye" }
         ]
 
         generator = SnippetHtmlGenerator(template)
@@ -32,8 +32,8 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
             for tag in snippet["tags"]:
                 self.assertIn("<a href='nightblade.comz/tags/{}.html'>{}</a>".format(tag, tag), actual_html)
             
-            if "icon" in snippet:
-                expected_icon_html = "<img class='icon' src='{}/images/{}.png".format(config_json["siteRootUrl"], snippet["icon"])
+            if "type" in snippet:
+                expected_icon_html = "<img class='icon' src='{}/images/{}.png".format(config_json["siteRootUrl"], snippet["type"])
                 self.assertIn(expected_icon_html, actual_html)
 
     def test_get_snippet_html_renders_html_correctly_and_no_root_url(self):

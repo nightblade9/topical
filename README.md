@@ -24,21 +24,22 @@ Create a new directory for your tropical project. (Bonus points if you version-c
 
 Optionally, you can include:
 - a `blurb` describing the link
-- an `icon` - if specified, Tropical will add `/images/<icon>.png` after the item title 
+- an `type` - if specified, Tropical will add `/images/<type>.png` after the item title 
 
 ```json
 [
     {
-        "title": "Pelican",
-        "url": "https://docs.getpelican.com/en/latest/",
-        "tags": [ "static-site-generator", "python" ],
-        "blurb": "Static site generator that supports Markdown."
+        "title": "Steambirds: Survival Mobile",
+        "url": "https://lostgarden.home.blog/2011/10/13/steambirds-survival-mobile/",
+        "tags": ["arrow of play", "game analysis", "choice", "pacing", "goals"],
+        "blurb": "An introduction to the concept of arrow of play, the property of systems that always move the player forward (such as hunger in roguelikes)."
     },
     {
-        "title": "Wordpress",
-        "url": "https://wordpress.org",
-        "tags": [ "cms", "php", "mysql" ],
-        "icon": "video"
+        "title": "How to Keep Players Engaged (Without Being Evil)",
+        "url": "https://www.youtube.com/watch?v=hbzGO_Qonu0",
+        "tags": ["engagement", "pacing", "intensity", "difficulty", "core loop", "goals"],
+        "blurb": "How to keep players engaged, without addictive evil design?",
+        "type": "video"
     }
 ]
 ```
