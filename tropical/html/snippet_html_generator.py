@@ -1,4 +1,4 @@
-from tropical.html import tag_html_generator
+from tropical.html import tag_html_generator, type_page_html_generator
 from tropical.constants import SCRIPT_WRAPPER_HTML
 
 class SnippetHtmlGenerator:
@@ -29,7 +29,8 @@ class SnippetHtmlGenerator:
 
         if "type" in item:
             type = item["type"]
-            title_html += "<img class='icon' src='{}/images/{}.png' title={} />".format(root_url, type, type)
+            type_link = "{}/{}".format(root_url, type_page_html_generator.get_link_for(type))
+            title_html += "<a href='{}'><img class='icon' src='{}/images/{}.png' title={} /></a>".format(type_link, root_url, type, type)
 
         item_html = item_html.replace("{title}", title_html)
         item_html = item_html.replace("{url}", "<a href='{}'>{}</a>".format(item["url"], item["url"]))

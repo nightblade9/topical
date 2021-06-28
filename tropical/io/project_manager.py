@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import glob, json, os, shutil, sys
-from tropical.constants import CONFIG_FILE_NAME, DATA_FILE_NAME, TAGS_DIRECTORY, THEME_DIRECTORY_NAME
+from tropical.constants import CONFIG_FILE_NAME, DATA_FILE_NAME, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TYPES_DIRECTORY
 
 class ProjectManager:
     
@@ -37,6 +37,7 @@ def recreate_output_directory(output_directory):
 
     os.mkdir(output_directory)
     os.mkdir("{}/{}".format(output_directory, TAGS_DIRECTORY))
+    os.mkdir("{}/{}".format(output_directory, TYPES_DIRECTORY))
 
 def copy_required_static_files(project_directory, output_directory):
     """Copy required files (e.g. static/*.js) that are required for Tropical to work (e.g. search)"""

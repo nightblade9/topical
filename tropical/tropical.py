@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
 import glob, json, os, sys, time
-from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TAGS_METADATA_FILENAME
+from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TAGS_METADATA_FILENAME, TYPES_DIRECTORY
 
 # all imports related to generate_output
 from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
 from tropical.constants import SNIPPET_FILE_NAME
-from tropical.content import tag_finder
+from tropical.content import tag_finder, type_finder
 
-from tropical.html import index_html_generator, tag_page_html_generator
+from tropical.html import index_html_generator, tag_page_html_generator, type_page_html_generator
 from tropical.html.open_graph_generator import OpenGraphGenerator
 from tropical.html import search_html_generator
 from tropical.html import tag_html_generator
@@ -104,6 +104,14 @@ class Tropical:
         tag_index_html = open_graph.add_meta_tags(tag_index_html, "All Tags")
         all_files["{}/{}".format(TAGS_DIRECTORY, INDEX_FILENAME)] = tag_index_html
         
+        unique_types:list = type_finder.get_unique_types(content_data)
+        for type in unique_types:
+            # match everywhere else we use type normalization
+            normalized_type = type.replace(' ', '-').replace("'", "")
+            type_page_html = type_page_html_generator.generate_type_page(type, normalized_type, self._snippet_generator, content_data, config_json, themer)
+            type_page_html = open_graph.add_meta_tags(type_page_html, "{} items".format(type))
+            all_files["{}/{}.html".format(TYPES_DIRECTORY, normalized_type)] = type_page_html
+
         search_html = search_html_generator.generate_search_page_html(content_data, config_json, self._snippet_generator, themer)
         search_html = open_graph.add_meta_tags(search_html, "Search")
         all_files[SEARCH_OUTPUT_FILE] = search_html
