@@ -1,6 +1,7 @@
 import unittest
 
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
+from tropical.html import type_page_html_generator
 
 class TestSnippetHtmlGenerator(unittest.TestCase):
 
@@ -62,3 +63,27 @@ class TestSnippetHtmlGenerator(unittest.TestCase):
         self.assertTrue(actual.startswith("<script type='text/javascript'"))
         self.assertTrue(actual.endswith("</script>"))
         self.assertGreater(actual.index("window.snippet="), -1)
+    
+    def test_get_snippet_html_includes_type_and_link_to_types_page(self):
+        # Arrange
+        type = "reference"
+        root_url = "https://root.site"
+
+        snippet = {
+            "title": "GDL",
+            "url": "https://nightblade9.github.io/game-design-library",
+            "tags": ["game-design", "STATIC website", "Demon's Heart"],
+            "blurb": "Game design library!",
+            "type": type
+        }
+
+        template = "GDL template: T={title} U={url} Ts={tags} B={blurb}"
+        generator = SnippetHtmlGenerator(template)
+
+        # Act
+        actual = generator.get_snippet_html(snippet, {"siteRootUrl": root_url})
+
+        # Assert
+        expected_type_link = "{}/{}".format(root_url, type_page_html_generator.get_link_for("reference"))
+        expected_link_html = "<a href='{}'><img class='icon' src='{}/images/{}.png' title={} /></a>".format(expected_type_link, root_url, type, type)
+        self.assertIn(expected_link_html, actual)
