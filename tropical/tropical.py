@@ -14,6 +14,7 @@ from tropical.html import search_html_generator
 from tropical.html import tag_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
 from tropical.io.project_manager import ProjectManager
+from tropical.io import duplicate_link_detector
 from tropical.io import project_manager
 from tropical.io.themer import Themer
 from tropical.io import config_fetcher
@@ -57,6 +58,12 @@ class Tropical:
         # copy static JS required for tropical functions (search)
         project_manager.copy_required_static_files(project_directory, output_directory)
         project_manager.copy_theme_files(project_directory, output_directory)
+
+        dupes = duplicate_link_detector.find_duplicate_links(content_data)
+        if len(dupes) > 0:
+            print("*** {} duplicate links found! ***".format(len(dupes)))
+            for dupe in dupes:
+                print(dupe)
         
         stop_time = time.time()
         
