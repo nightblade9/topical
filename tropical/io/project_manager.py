@@ -1,9 +1,11 @@
 #!/usr/bin/python
 import glob, json, os, shutil, sys
-from tropical.constants import CONFIG_FILE_NAME, DATA_FILE_NAME, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TYPES_DIRECTORY
+from tropical.constants import DATA_FILE_NAME, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TYPES_DIRECTORY
 
 class ProjectManager:
     
+    _DO_NOT_EDIT_WARNING = "\n/*** WARNING: DO NOT EDIT! This file is generated and will be overwritten! ***/\n"
+
     def __init__(self, project_directory):
         """Validates that the project directory is valid (exists, has a data-file in it)."""
         if len(project_directory.strip()) == 0:
@@ -43,9 +45,18 @@ def copy_required_static_files(project_directory, output_directory):
     """Copy required files (e.g. static/*.js) that are required for Tropical to work (e.g. search)"""
     
     for filename in glob.glob("static/*.js"):
-            shutil.copy(filename, output_directory)
+        shutil.copy(filename, output_directory)
     
-    shutil.copy("{}/{}".format(project_directory, DATA_FILE_NAME), output_directory)
+    # copy data.json to output directory (needed for search)
+    # Update it to add a warning at the front end end
+    with open("{}/{}".format(project_directory, DATA_FILE_NAME), 'r') as file_pointer:
+        lines = file_pointer.readlines()
+
+    lines.insert(0, ProjectManager._DO_NOT_EDIT_WARNING)
+    lines.append(ProjectManager._DO_NOT_EDIT_WARNING)
+
+    with open("{}/{}".format(output_directory, DATA_FILE_NAME), 'w') as file_pointer:
+        file_pointer.writelines(lines)
 
 def copy_theme_files(project_directory, output_directory):
     """Copy any theme files (CSS, JS, PNG, etc.) to the output directory"""
