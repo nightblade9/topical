@@ -1,11 +1,9 @@
 #!/usr/bin/python
-import glob, json, os, shutil, sys
+import glob, json, os, re, shutil, sys
 from tropical.constants import DATA_FILE_NAME, TAGS_DIRECTORY, THEME_DIRECTORY_NAME, TYPES_DIRECTORY
 
 class ProjectManager:
     
-    _DO_NOT_EDIT_WARNING = "\n/*** WARNING: DO NOT EDIT! This file is generated and will be overwritten! ***/\n"
-
     def __init__(self, project_directory):
         """Validates that the project directory is valid (exists, has a data-file in it)."""
         if len(project_directory.strip()) == 0:
@@ -47,16 +45,16 @@ def copy_required_static_files(project_directory, output_directory):
     for filename in glob.glob("static/*.js"):
         shutil.copy(filename, output_directory)
     
-    # copy data.json to output directory (needed for search)
-    # Update it to add a warning at the front end end
+    contents = ""
+    # copy data.json to output directory (needed for search).
+    # Minify for speed, and to make it clear that it's not the source file (prevent accidental edits)
     with open("{}/{}".format(project_directory, DATA_FILE_NAME), 'r') as file_pointer:
-        lines = file_pointer.readlines()
-
-    lines.insert(0, ProjectManager._DO_NOT_EDIT_WARNING)
-    lines.append(ProjectManager._DO_NOT_EDIT_WARNING)
+        contents = file_pointer.read()
+    
+    contents = re.sub("\s+", " ", contents)
 
     with open("{}/{}".format(output_directory, DATA_FILE_NAME), 'w') as file_pointer:
-        file_pointer.writelines(lines)
+        file_pointer.write(contents)
 
 def copy_theme_files(project_directory, output_directory):
     """Copy any theme files (CSS, JS, PNG, etc.) to the output directory"""
