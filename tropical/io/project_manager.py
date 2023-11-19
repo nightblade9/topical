@@ -15,7 +15,7 @@ class ProjectManager:
             sys.exit(3)
 
         if not os.path.isfile("{}/{}".format(project_directory, DATA_FILE_NAME)):
-            print("Can't find config file {}\{}".format(project_directory, DATA_FILE_NAME))
+            print("Can't find config file {}\\{}".format(project_directory, DATA_FILE_NAME))
             sys.exit(4)
 
         self._project_directory = project_directory
@@ -51,7 +51,7 @@ def copy_required_static_files(project_directory, output_directory):
     with open("{}/{}".format(project_directory, DATA_FILE_NAME), 'r') as file_pointer:
         contents = file_pointer.read()
     
-    contents = re.sub("\s+", " ", contents)
+    contents = re.sub("\\s+", " ", contents)
 
     with open("{}/{}".format(output_directory, DATA_FILE_NAME), 'w') as file_pointer:
         file_pointer.write(contents)

@@ -46,7 +46,7 @@ Optionally, you can include:
 
 Next, copy the `default-theme` directory from `tropical` to your project root and rename it to `theme`.
 
-Finally, run `tropical` to generte the output.  I haven't bundled this as a `pip` module yet, so for now, you need to run it by hand.
+Finally, run `tropical` to generate the output.  I haven't bundled this as a `pip` module yet, so for now, you need to run it by hand.
 
 - `git clone https://github.com/nightblade/tropical`
 - `cd tropical`
