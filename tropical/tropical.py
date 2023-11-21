@@ -6,10 +6,12 @@ from tropical.constants import OUTPUT_DIRECTORY, TAGS_DIRECTORY, THEME_DIRECTORY
 # all imports related to generate_output
 from tropical.constants import INDEX_FILENAME, TAGS_DIRECTORY, SEARCH_OUTPUT_FILE, PAGES_DIRECTORY
 from tropical.constants import SNIPPET_FILE_NAME
+from tropical.constants import ALL_ENTRIES_FILE_NAME
 from tropical.content import tag_finder, type_finder
 
 from tropical.html import index_html_generator, tag_page_html_generator, type_page_html_generator
 from tropical.html.open_graph_generator import OpenGraphGenerator
+from tropical.html import all_items_page_html_generator
 from tropical.html import search_html_generator
 from tropical.html import tag_html_generator
 from tropical.html.snippet_html_generator import SnippetHtmlGenerator
@@ -132,6 +134,11 @@ class Tropical:
         final_html = themer.apply_layout_html(index_html, "Home", config_json)
         final_html = open_graph.add_meta_tags(final_html, "")
         all_files[INDEX_FILENAME] = final_html
+
+        # If necessary, generate all.html
+        all_items_html = all_items_page_html_generator.generate_all_items_page_html(self._snippet_generator, themer, config_json, content_data)
+        if all_items_html != "":
+            all_files[ALL_ENTRIES_FILE_NAME] = all_items_html
 
         return [all_files, stats]
     

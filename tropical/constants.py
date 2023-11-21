@@ -12,6 +12,7 @@ INTRO_FILE_NAME = "intro.html"
 # Output constants
 OUTPUT_DIRECTORY = "docs" # play nice with GitHub Pages
 INDEX_FILENAME = "index.html"
+ALL_ENTRIES_FILE_NAME = "all.html"
 TAGS_DIRECTORY = "tags"
 TYPES_DIRECTORY = "types"
 
