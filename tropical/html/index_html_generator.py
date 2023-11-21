@@ -18,13 +18,19 @@ def generate_index_page_html(project_directory, stats,  blurbs, tag_distribution
 
     index_html = _show_popular_tags(index_html, tag_distribution, config_json)
     index_html = _show_last_updated(index_html)
+    index_html = _show_number_of_items(index_html, config_json)
 
+    return index_html
+
+def _show_number_of_items(index_html, config_json):
+    if "{itemsOnHomePage}" in index_html:
+        index_html = index_html.replace("{itemsOnHomePage}", str(config_json["itemsOnHomePage"]))
     return index_html
 
 def _show_last_updated(index_html):
     """Substitutes the last-updated date into the token {lastUpdated} if present."""
     if "{lastUpdated}" in index_html:
-        now = datetime.datetime.now().strftime("%Y-%m-%d")
+        now = datetime.datetime.now().strftime("%B %d, %Y")
         index_html = index_html.replace("{lastUpdated}", now)
     return index_html
 

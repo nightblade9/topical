@@ -126,7 +126,7 @@ class Tropical:
         self._generate_user_made_pages(project_directory, config_json, themer, open_graph, all_files)
 
         # Static pages: index last, since it displays stats
-        stats = "{} items across {} tags".format(len(snippets_html), len(unique_tags))
+        stats = "{} items across {} tags".format(len(content_data), len(unique_tags))
 
         index_html = index_html_generator.generate_index_page_html(project_directory, stats, snippets_html, tag_distribution, config_json)
         final_html = themer.apply_layout_html(index_html, "Home", config_json)

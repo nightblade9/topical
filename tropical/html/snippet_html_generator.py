@@ -9,7 +9,15 @@ class SnippetHtmlGenerator:
         """Get the HTML snippets for all content items."""
         html_snippets = []
 
-        for item in content_json:
+        num_items = len(content_json) # max
+        if "itemsOnHomePage" in config_json:
+            num_items = config_json["itemsOnHomePage"]
+            print(f"Showing {num_items} snippets on the home page.")
+
+        for i in range(num_items):
+            # Get the most recent num_items items. Yes, really, this formula is weird.
+            # Well, anyway, we reverse the snippets in tropical.py, so ... yeah.
+            item = content_json[len(content_json) - num_items + i]
             item_html = self.get_snippet_html(item, config_json)
             html_snippets.append(item_html)
             

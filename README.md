@@ -150,6 +150,8 @@ If present, a small intro blurb will be shown on the home page, using the conten
 
 - `{stats}`: Site stats (number of items catalogued and number of tags).
 - `{tags:n}`: Shows the most popular `n` tags, descending (most-popular first).
+- `{lastUpdated}`: Shows the date Tropical generated the site.
+- `{itemsOnHomePage}`: Specifies how many items to show on the home page. Also causes `all.html` to generate with a list of all items.
 
 ## CSS
 
